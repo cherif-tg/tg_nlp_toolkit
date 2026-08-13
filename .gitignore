@@ -1,0 +1,10 @@
+# Données brutes et artefacts locaux — ne pas versionner
+data/raw/
+models/
+.openclaw/
+.openclaw-attachments/
+*.env
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+.venv/
