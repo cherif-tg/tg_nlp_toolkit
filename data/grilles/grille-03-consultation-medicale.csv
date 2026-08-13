@@ -1,0 +1,111 @@
+ID;Sous-thematique;Phrase FR;Trad ewe L1;Trad ewe L2;Arbitrage;Statut
+CM-ACC-001;Accueil et motif;Bonjour asseyez-vous s'il vous plaît.;;;;A traduire
+CM-ACC-002;Accueil et motif;Quel est le motif de votre visite ?;;;;A traduire
+CM-ACC-003;Accueil et motif;Qu'est-ce qui vous amène aujourd'hui ?;;;;A traduire
+CM-ACC-004;Accueil et motif;Depuis combien de temps vous sentez-vous malade ?;;;;A traduire
+CM-ACC-005;Accueil et motif;Où avez-vous mal exactement ?;;;;A traduire
+CM-ACC-006;Accueil et motif;Décrivez-moi ce que vous ressentez.;;;;A traduire
+CM-ACC-007;Accueil et motif;Avez-vous déjà consulté pour ce problème ?;;;;A traduire
+CM-ACC-008;Accueil et motif;Qui vous a envoyé ici ?;;;;A traduire
+CM-ACC-009;Accueil et motif;Avez-vous votre carte de santé ?;;;;A traduire
+CM-ACC-010;Accueil et motif;Êtes-vous venu seul aujourd'hui ?;;;;A traduire
+CM-ACC-011;Accueil et motif;Votre état a-t-il changé depuis hier ?;;;;A traduire
+CM-ACC-012;Accueil et motif;Qu'est-ce qui aggrave votre douleur ?;;;;A traduire
+CM-ACC-013;Accueil et motif;Qu'est-ce qui soulage votre douleur ?;;;;A traduire
+CM-ACC-014;Accueil et motif;Avez-vous pris des médicaments avant de venir ?;;;;A traduire
+CM-ACC-015;Accueil et motif;Merci de m'expliquer ce qui s'est passé.;;;;A traduire
+CM-INT-001;Interrogatoire;Avez-vous de la fièvre ?;;;;A traduire
+CM-INT-002;Interrogatoire;Depuis quand avez-vous ces symptômes ?;;;;A traduire
+CM-INT-003;Interrogatoire;Avez-vous mal à la tête ?;;;;A traduire
+CM-INT-004;Interrogatoire;Avez-vous des difficultés à respirer ?;;;;A traduire
+CM-INT-005;Interrogatoire;Est-ce que vous toussez ?;;;;A traduire
+CM-INT-006;Interrogatoire;Avez-vous des douleurs en urinant ?;;;;A traduire
+CM-INT-007;Interrogatoire;Vos selles sont-elles normales ?;;;;A traduire
+CM-INT-008;Interrogatoire;Avez-vous perdu du poids récemment ?;;;;A traduire
+CM-INT-009;Interrogatoire;Dormez-vous bien la nuit ?;;;;A traduire
+CM-INT-010;Interrogatoire;Avez-vous des vertiges ?;;;;A traduire
+CM-INT-011;Interrogatoire;Est-ce que vous mangez normalement ?;;;;A traduire
+CM-INT-012;Interrogatoire;Avez-vous des antécédents de maladie ?;;;;A traduire
+CM-INT-013;Interrogatoire;Prenez-vous des médicaments régulièrement ?;;;;A traduire
+CM-INT-014;Interrogatoire;Êtes-vous allergique à quelque chose ?;;;;A traduire
+CM-INT-015;Interrogatoire;Avez-vous déjà eu une opération ?;;;;A traduire
+CM-INT-016;Interrogatoire;Les personnes de votre famille ont-elles ce problème ?;;;;A traduire
+CM-INT-017;Interrogatoire;Avez-vous voyagé récemment ?;;;;A traduire
+CM-INT-018;Interrogatoire;Votre travail est-il physique ?;;;;A traduire
+CM-INT-019;Interrogatoire;Buvez-vous de l'alcool ?;;;;A traduire
+CM-INT-020;Interrogatoire;Fumez-vous ?;;;;A traduire
+CM-EXA-001;Examen clinique;Je vais vous examiner maintenant.;;;;A traduire
+CM-EXA-002;Examen clinique;Allongez-vous sur la table d'examen.;;;;A traduire
+CM-EXA-003;Examen clinique;Ouvrez la bouche s'il vous plaît.;;;;A traduire
+CM-EXA-004;Examen clinique;Respirez profondément.;;;;A traduire
+CM-EXA-005;Examen clinique;Toussez s'il vous plaît.;;;;A traduire
+CM-EXA-006;Examen clinique;Je vais prendre votre tension.;;;;A traduire
+CM-EXA-007;Examen clinique;Je vais écouter votre cœur.;;;;A traduire
+CM-EXA-008;Examen clinique;Montrez-moi où vous avez mal.;;;;A traduire
+CM-EXA-009;Examen clinique;Levez le bras droit.;;;;A traduire
+CM-EXA-010;Examen clinique;Appuyez ici est-ce que ça fait mal ?;;;;A traduire
+CM-EXA-011;Examen clinique;Je vais vérifier vos yeux.;;;;A traduire
+CM-EXA-012;Examen clinique;Votre abdomen est un peu gonflé.;;;;A traduire
+CM-EXA-013;Examen clinique;Je vais vous faire une prise de sang.;;;;A traduire
+CM-EXA-014;Examen clinique;Les résultats arrivent dans quelques jours.;;;;A traduire
+CM-EXA-015;Examen clinique;L'examen est terminé.;;;;A traduire
+CM-DIA-001;Diagnostic;Vous avez une infection.;;;;A traduire
+CM-DIA-002;Diagnostic;C'est une maladie courante ne vous inquiétez pas.;;;;A traduire
+CM-DIA-003;Diagnostic;Vous avez besoin d'un traitement.;;;;A traduire
+CM-DIA-004;Diagnostic;Le diagnostic est confirmé.;;;;A traduire
+CM-DIA-005;Diagnostic;Votre maladie n'est pas contagieuse.;;;;A traduire
+CM-DIA-006;Diagnostic;Ce n'est pas grave mais il faut traiter.;;;;A traduire
+CM-DIA-007;Diagnostic;Vous devez être suivi régulièrement.;;;;A traduire
+CM-DIA-008;Diagnostic;Votre état nécessite une consultation spécialisée.;;;;A traduire
+CM-DIA-009;Diagnostic;Je vais vous orienter vers un spécialiste.;;;;A traduire
+CM-DIA-010;Diagnostic;Vous devez faire d'autres examens.;;;;A traduire
+CM-DIA-011;Diagnostic;La bonne nouvelle c'est que ça se soigne.;;;;A traduire
+CM-DIA-012;Diagnostic;Ce traitement est très efficace.;;;;A traduire
+CM-DIA-013;Diagnostic;Il faut agir maintenant.;;;;A traduire
+CM-DIA-014;Diagnostic;Ne laissez pas cette maladie s'installer.;;;;A traduire
+CM-DIA-015;Diagnostic;Vous pouvez guérir complètement.;;;;A traduire
+CM-PRE-001;Prescription et conseils;Je vous prescris ce médicament.;;;;A traduire
+CM-PRE-002;Prescription et conseils;Prenez ce sirop deux fois par jour.;;;;A traduire
+CM-PRE-003;Prescription et conseils;Ce comprimé se prend le matin à jeun.;;;;A traduire
+CM-PRE-004;Prescription et conseils;Buvez beaucoup d'eau pendant le traitement.;;;;A traduire
+CM-PRE-005;Prescription et conseils;Reposez-vous pendant quelques jours.;;;;A traduire
+CM-PRE-006;Prescription et conseils;Évitez les efforts physiques.;;;;A traduire
+CM-PRE-007;Prescription et conseils;Mangez des aliments sains.;;;;A traduire
+CM-PRE-008;Prescription et conseils;Ne buvez pas d'alcool pendant le traitement.;;;;A traduire
+CM-PRE-009;Prescription et conseils;Revenez dans une semaine.;;;;A traduire
+CM-PRE-010;Prescription et conseils;Si la douleur continue revenez plus tôt.;;;;A traduire
+CM-PRE-011;Prescription et conseils;Suivez bien l'ordonnance.;;;;A traduire
+CM-PRE-012;Prescription et conseils;La pharmacie est à côté du centre.;;;;A traduire
+CM-PRE-013;Prescription et conseils;Ce médicament peut donner sommeil.;;;;A traduire
+CM-PRE-014;Prescription et conseils;Évitez de conduire après la prise.;;;;A traduire
+CM-PRE-015;Prescription et conseils;Prenez le traitement jusqu'au bout.;;;;A traduire
+CM-PRE-016;Prescription et conseils;L'ordonnance est valable trois mois.;;;;A traduire
+CM-PRE-017;Prescription et conseils;Reprenez rendez-vous si besoin.;;;;A traduire
+CM-PRE-018;Prescription et conseils;Protégez-vous contre le paludisme.;;;;A traduire
+CM-PRE-019;Prescription et conseils;Lavez-vous les mains régulièrement.;;;;A traduire
+CM-PRE-020;Prescription et conseils;Votre santé est entre vos mains.;;;;A traduire
+CM-SUI-001;Suivi et retour;Comment vous sentez-vous aujourd'hui ?;;;;A traduire
+CM-SUI-002;Suivi et retour;Avez-vous pris vos médicaments ?;;;;A traduire
+CM-SUI-003;Suivi et retour;Les symptômes ont-ils diminué ?;;;;A traduire
+CM-SUI-004;Suivi et retour;Avez-vous eu des effets secondaires ?;;;;A traduire
+CM-SUI-005;Suivi et retour;Le traitement semble bien fonctionner.;;;;A traduire
+CM-SUI-006;Suivi et retour;Nous allons continuer le traitement.;;;;A traduire
+CM-SUI-007;Suivi et retour;Je vais ajuster la dose.;;;;A traduire
+CM-SUI-008;Suivi et retour;Votre tension est meilleure aujourd'hui.;;;;A traduire
+CM-SUI-009;Suivi et retour;Continuez le même traitement.;;;;A traduire
+CM-SUI-010;Suivi et retour;Il faut encore quelques jours de repos.;;;;A traduire
+CM-SUI-011;Suivi et retour;Les résultats sont bons.;;;;A traduire
+CM-SUI-012;Suivi et retour;Vous pouvez reprendre vos activités.;;;;A traduire
+CM-SUI-013;Suivi et retour;Revenez dans un mois pour le contrôle.;;;;A traduire
+CM-SUI-014;Suivi et retour;Nous allons suivre votre état régulièrement.;;;;A traduire
+CM-SUI-015;Suivi et retour;Appelez le centre si quelque chose change.;;;;A traduire
+CM-SPE-001;Situations particulieres;Votre maladie est chronique il faudra un suivi régulier.;;;;A traduire
+CM-SPE-002;Situations particulieres;Le diabète se contrôle avec le traitement et l'alimentation.;;;;A traduire
+CM-SPE-003;Situations particulieres;L'hypertension nécessite des contrôles fréquents.;;;;A traduire
+CM-SPE-004;Situations particulieres;Ne stoppez jamais le traitement sans avis.;;;;A traduire
+CM-SPE-005;Situations particulieres;Votre enfant a besoin d'une consultation pédiatrique.;;;;A traduire
+CM-SPE-006;Situations particulieres;Je vous adresse au centre hospitalier régional.;;;;A traduire
+CM-SPE-007;Situations particulieres;Prévoyez un accompagnant pour l'hôpital.;;;;A traduire
+CM-SPE-008;Situations particulieres;L'ambulance va vous transporter.;;;;A traduire
+CM-SPE-009;Situations particulieres;Les urgences sont ouvertes jour et nuit.;;;;A traduire
+CM-SPE-010;Situations particulieres;Gardez espoir beaucoup de patients guérissent ici.;;;;A traduire

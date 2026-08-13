@@ -1,0 +1,91 @@
+ID;Sous-thematique;Phrase FR;Trad ewe L1;Trad ewe L2;Arbitrage;Statut
+SP-EAU-001;Eau et electricite;L'eau potable protège la santé.;;;;A traduire
+SP-EAU-002;Eau et electricite;Faites bouillir l'eau avant de boire.;;;;A traduire
+SP-EAU-003;Eau et electricite;L'eau du forage est contrôlée.;;;;A traduire
+SP-EAU-004;Eau et electricite;Fermez bien les robinets.;;;;A traduire
+SP-EAU-005;Eau et electricite;Ne gaspillez pas l'eau.;;;;A traduire
+SP-EAU-006;Eau et electricite;Les coupures d'eau sont annoncées.;;;;A traduire
+SP-EAU-007;Eau et electricite;Payez votre facture d'eau à temps.;;;;A traduire
+SP-EAU-008;Eau et electricite;La consommation d'électricité se lit sur le compteur.;;;;A traduire
+SP-EAU-009;Eau et electricite;Éteignez les lampes en quittant la pièce.;;;;A traduire
+SP-EAU-010;Eau et electricite;Débranchez les appareils inutiles.;;;;A traduire
+SP-EAU-011;Eau et electricite;Les branchements électriques doivent être sécurisés.;;;;A traduire
+SP-EAU-012;Eau et electricite;Ne touchez pas aux fils électriques.;;;;A traduire
+SP-EAU-013;Eau et electricite;En cas de panne appelez la compagnie.;;;;A traduire
+SP-EAU-014;Eau et electricite;Le prépaiement facilite la gestion.;;;;A traduire
+SP-EAU-015;Eau et electricite;Chargez votre compteur à temps.;;;;A traduire
+SP-EAU-016;Eau et electricite;L'énergie solaire se développe.;;;;A traduire
+SP-EAU-017;Eau et electricite;Les panneaux solaires éclairent les villages.;;;;A traduire
+SP-EAU-018;Eau et electricite;L'électricité améliore la vie.;;;;A traduire
+SP-EAU-019;Eau et electricite;L'eau et l'électricité sont des services essentiels.;;;;A traduire
+SP-EAU-020;Eau et electricite;Protégez les installations publiques.;;;;A traduire
+SP-SAN-001;Sante publique;Le centre de santé est ouvert à tous.;;;;A traduire
+SP-SAN-002;Sante publique;La consultation coûte peu au centre.;;;;A traduire
+SP-SAN-003;Sante publique;Les médicaments essentiels sont disponibles.;;;;A traduire
+SP-SAN-004;Sante publique;La vaccination est gratuite.;;;;A traduire
+SP-SAN-005;Sante publique;Le dépistage du VIH est confidentiel.;;;;A traduire
+SP-SAN-006;Sante publique;La tuberculose se soigne gratuitement.;;;;A traduire
+SP-SAN-007;Sante publique;Les campagnes de santé informent la population.;;;;A traduire
+SP-SAN-008;Sante publique;L'hygiène prévient les maladies.;;;;A traduire
+SP-SAN-009;Sante publique;Les latrines protègent la communauté.;;;;A traduire
+SP-SAN-010;Sante publique;L'assainissement est l'affaire de tous.;;;;A traduire
+SP-SAN-011;Sante publique;Les déchets doivent être triés.;;;;A traduire
+SP-SAN-012;Sante publique;Ne brûlez pas les déchets plastiques.;;;;A traduire
+SP-SAN-013;Sante publique;Les ordures se déposent aux points de collecte.;;;;A traduire
+SP-SAN-014;Sante publique;Une commune propre est une commune en santé.;;;;A traduire
+SP-SAN-015;Sante publique;La santé publique commence chez chacun.;;;;A traduire
+SP-TRA-001;Transport;Les transports en commun desservent la ville.;;;;A traduire
+SP-TRA-002;Transport;Les taxis-motos sont pratiques.;;;;A traduire
+SP-TRA-003;Transport;Portez le casque à moto.;;;;A traduire
+SP-TRA-004;Transport;Respectez le code de la route.;;;;A traduire
+SP-TRA-005;Transport;La gare routière organise les départs.;;;;A traduire
+SP-TRA-006;Transport;Les billets s'achètent au guichet.;;;;A traduire
+SP-TRA-007;Transport;Les horaires sont affichés.;;;;A traduire
+SP-TRA-008;Transport;Les routes se réhabilitent.;;;;A traduire
+SP-TRA-009;Transport;Voyagez avec des compagnies sérieuses.;;;;A traduire
+SP-TRA-010;Transport;La sécurité routière protège tout le monde.;;;;A traduire
+SP-IMP-001;Impots;Les impôts financent les services publics.;;;;A traduire
+SP-IMP-002;Impots;Les contribuables déclarent leurs revenus.;;;;A traduire
+SP-IMP-003;Impots;La patente se renouvelle chaque année.;;;;A traduire
+SP-IMP-004;Impots;Payez vos impôts à temps.;;;;A traduire
+SP-IMP-005;Impots;Les impôts locaux soutiennent la commune.;;;;A traduire
+SP-IMP-006;Impots;Demandez un reçu pour chaque paiement.;;;;A traduire
+SP-IMP-007;Impots;Les entreprises paient l'impôt sur les bénéfices.;;;;A traduire
+SP-IMP-008;Impots;La TVA est incluse dans les prix.;;;;A traduire
+SP-IMP-009;Impots;Les agents des impôts vous conseillent.;;;;A traduire
+SP-IMP-010;Impots;Payer ses impôts est un devoir citoyen.;;;;A traduire
+SP-POS-001;Poste et communication;La poste distribue le courrier.;;;;A traduire
+SP-POS-002;Poste et communication;Envoyez des colis en toute sécurité.;;;;A traduire
+SP-POS-003;Poste et communication;Les mandats se retirent à la poste.;;;;A traduire
+SP-POS-004;Poste et communication;Les timbres sont vendus à la poste.;;;;A traduire
+SP-POS-005;Poste et communication;Le réseau téléphonique couvre le pays.;;;;A traduire
+SP-POS-006;Poste et communication;Internet arrive dans les villages.;;;;A traduire
+SP-POS-007;Poste et communication;Les cybercafés offrent l'accès.;;;;A traduire
+SP-POS-008;Poste et communication;Méfiez-vous des arnaques par téléphone.;;;;A traduire
+SP-POS-009;Poste et communication;Ne partagez pas vos codes secrets.;;;;A traduire
+SP-POS-010;Poste et communication;La communication connecte les familles.;;;;A traduire
+SP-SEC-001;Securite;En cas de danger appelez la police.;;;;A traduire
+SP-SEC-002;Securite;Le commissariat est ouvert jour et nuit.;;;;A traduire
+SP-SEC-003;Securite;La police protège les citoyens.;;;;A traduire
+SP-SEC-004;Securite;Signalez les comportements suspects.;;;;A traduire
+SP-SEC-005;Securite;Les pompiers interviennent en urgence.;;;;A traduire
+SP-SEC-006;Securite;Les numéros d'urgence sont affichés.;;;;A traduire
+SP-SEC-007;Securite;Gardez vos documents d'identité.;;;;A traduire
+SP-SEC-008;Securite;La sécurité est l'affaire de tous.;;;;A traduire
+SP-SEC-009;Securite;Le voisinage veille les uns sur les autres.;;;;A traduire
+SP-SEC-010;Securite;Ensemble vivons en sécurité.;;;;A traduire
+SP-SOC-001;Services sociaux;Les services sociaux aident les familles en difficulté.;;;;A traduire
+SP-SOC-002;Services sociaux;L'assistance sociale soutient les personnes âgées.;;;;A traduire
+SP-SOC-003;Services sociaux;Les orphelins sont accompagnés.;;;;A traduire
+SP-SOC-004;Services sociaux;Les personnes handicapées ont des droits.;;;;A traduire
+SP-SOC-005;Services sociaux;Les allocations familiales existent.;;;;A traduire
+SP-SOC-006;Services sociaux;L'aide sociale se demande au centre social.;;;;A traduire
+SP-SOC-007;Services sociaux;Les travailleurs sociaux vous écoutent.;;;;A traduire
+SP-SOC-008;Services sociaux;Les ONG complètent l'action publique.;;;;A traduire
+SP-SOC-009;Services sociaux;Les cantines scolaires aident les enfants.;;;;A traduire
+SP-SOC-010;Services sociaux;La solidarité nationale protège les plus fragiles.;;;;A traduire
+SP-SOC-011;Services sociaux;Les victimes de violences sont soutenues.;;;;A traduire
+SP-SOC-012;Services sociaux;Le numéro vert est gratuit.;;;;A traduire
+SP-SOC-013;Services sociaux;Ne restez pas seul face aux difficultés.;;;;A traduire
+SP-SOC-014;Services sociaux;Demandez de l'aide c'est un droit.;;;;A traduire
+SP-SOC-015;Services sociaux;La société togolaise est solidaire.;;;;A traduire

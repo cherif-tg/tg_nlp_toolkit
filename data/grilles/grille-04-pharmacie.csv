@@ -1,0 +1,111 @@
+ID;Sous-thematique;Phrase FR;Trad ewe L1;Trad ewe L2;Arbitrage;Statut
+PHA-ACC-001;A la pharmacie;Bonjour je viens chercher mes médicaments.;;;;A traduire
+PHA-ACC-002;A la pharmacie;Voici mon ordonnance.;;;;A traduire
+PHA-ACC-003;A la pharmacie;Ce médicament est-il disponible ?;;;;A traduire
+PHA-ACC-004;A la pharmacie;Je n'ai pas de prescription pouvez-vous m'aider ?;;;;A traduire
+PHA-ACC-005;A la pharmacie;La pharmacie est ouverte de huit heures à dix-neuf heures.;;;;A traduire
+PHA-ACC-006;A la pharmacie;Le pharmacien va vous conseiller.;;;;A traduire
+PHA-ACC-007;A la pharmacie;Avez-vous une carte d'assurance ?;;;;A traduire
+PHA-ACC-008;A la pharmacie;Le prix de ce médicament est raisonnable.;;;;A traduire
+PHA-ACC-009;A la pharmacie;Revenez demain si le médicament n'est pas en stock.;;;;A traduire
+PHA-ACC-010;A la pharmacie;Cette pharmacie est bien approvisionnée.;;;;A traduire
+PHA-ACC-011;A la pharmacie;Attendez votre tour s'il vous plaît.;;;;A traduire
+PHA-ACC-012;A la pharmacie;Je vous prépare votre commande.;;;;A traduire
+PHA-ACC-013;A la pharmacie;Gardez votre reçu.;;;;A traduire
+PHA-ACC-014;A la pharmacie;Y a-t-il une pharmacie de garde ce soir ?;;;;A traduire
+PHA-ACC-015;A la pharmacie;La pharmacie de garde est à Lomé ce week-end.;;;;A traduire
+PHA-MED-001;Medicaments et posologie;Prenez ce médicament trois fois par jour.;;;;A traduire
+PHA-MED-002;Medicaments et posologie;Ce sirop se prend avec une cuillère doseuse.;;;;A traduire
+PHA-MED-003;Medicaments et posologie;Avalez le comprimé avec de l'eau.;;;;A traduire
+PHA-MED-004;Medicaments et posologie;Ne mâchez pas ce comprimé.;;;;A traduire
+PHA-MED-005;Medicaments et posologie;Prenez le médicament avant les repas.;;;;A traduire
+PHA-MED-006;Medicaments et posologie;Ce médicament se prend après le repas.;;;;A traduire
+PHA-MED-007;Medicaments et posologie;Respectez bien la dose prescrite.;;;;A traduire
+PHA-MED-008;Medicaments et posologie;Ne doublez pas la dose si vous avez oublié.;;;;A traduire
+PHA-MED-009;Medicaments et posologie;Espacez les prises de huit heures.;;;;A traduire
+PHA-MED-010;Medicaments et posologie;Le traitement dure sept jours.;;;;A traduire
+PHA-MED-011;Medicaments et posologie;Ne prolongez pas le traitement sans avis.;;;;A traduire
+PHA-MED-012;Medicaments et posologie;Ce médicament est réservé aux adultes.;;;;A traduire
+PHA-MED-013;Medicaments et posologie;La dose pour l'enfant dépend de son poids.;;;;A traduire
+PHA-MED-014;Medicaments et posologie;Mélangez la poudre dans un verre d'eau.;;;;A traduire
+PHA-MED-015;Medicaments et posologie;Le médicament agit en une heure environ.;;;;A traduire
+PHA-MED-016;Medicaments et posologie;Si l'état ne s'améliore pas consultez.;;;;A traduire
+PHA-MED-017;Medicaments et posologie;Terminez toujours l'antibiotique prescrit.;;;;A traduire
+PHA-MED-018;Medicaments et posologie;Ne gardez pas de médicaments périmés.;;;;A traduire
+PHA-MED-019;Medicaments et posologie;Vérifiez la date de péremption avant d'acheter.;;;;A traduire
+PHA-MED-020;Medicaments et posologie;Suivez les instructions de la notice.;;;;A traduire
+PHA-EFF-001;Effets et precautions;Ce médicament peut causer des nausées.;;;;A traduire
+PHA-EFF-002;Effets et precautions;Ne vous inquiétez pas pour les effets légers.;;;;A traduire
+PHA-EFF-003;Effets et precautions;Arrêtez le traitement et consultez en cas d'allergie.;;;;A traduire
+PHA-EFF-004;Effets et precautions;Un gonflement du visage est un signe d'alerte.;;;;A traduire
+PHA-EFF-005;Effets et precautions;Ce médicament peut rendre somnolent.;;;;A traduire
+PHA-EFF-006;Effets et precautions;Évitez l'alcool avec ce traitement.;;;;A traduire
+PHA-EFF-007;Effets et precautions;Ne prenez pas ce médicament si vous êtes enceinte.;;;;A traduire
+PHA-EFF-008;Effets et precautions;Informez le pharmacien de vos autres médicaments.;;;;A traduire
+PHA-EFF-009;Effets et precautions;Ce médicament interagit avec l'aspirine.;;;;A traduire
+PHA-EFF-010;Effets et precautions;Les femmes enceintes doivent demander conseil.;;;;A traduire
+PHA-EFF-011;Effets et precautions;Ne donnez pas ce médicament aux enfants sans avis.;;;;A traduire
+PHA-EFF-012;Effets et precautions;Ce médicament peut colorer les urines.;;;;A traduire
+PHA-EFF-013;Effets et precautions;C'est sans danger c'est un effet connu.;;;;A traduire
+PHA-EFF-014;Effets et precautions;Signalez tout effet inhabituel au pharmacien.;;;;A traduire
+PHA-EFF-015;Effets et precautions;Respectez les précautions de la notice.;;;;A traduire
+PHA-SPE-001;Medicaments specifiques;L'aspirine soulage la fièvre et la douleur.;;;;A traduire
+PHA-SPE-002;Medicaments specifiques;Le paracétamol est doux pour l'estomac.;;;;A traduire
+PHA-SPE-003;Medicaments specifiques;L'ibuprofène est un anti-inflammatoire.;;;;A traduire
+PHA-SPE-004;Medicaments specifiques;Les antibiotiques ne soignent pas les virus.;;;;A traduire
+PHA-SPE-005;Medicaments specifiques;Prenez l'antibiotique jusqu'au bout du traitement.;;;;A traduire
+PHA-SPE-006;Medicaments specifiques;Les antipaludéens se prennent selon le poids.;;;;A traduire
+PHA-SPE-007;Medicaments specifiques;Ce sirop contre la toux calme la gorge.;;;;A traduire
+PHA-SPE-008;Medicaments specifiques;Le sérum salé nettoie le nez du bébé.;;;;A traduire
+PHA-SPE-009;Medicaments specifiques;Les sels de réhydratation remplacent l'eau perdue.;;;;A traduire
+PHA-SPE-010;Medicaments specifiques;La vitamine A renforce l'immunité de l'enfant.;;;;A traduire
+PHA-SPE-011;Medicaments specifiques;Le fer traite l'anémie.;;;;A traduire
+PHA-SPE-012;Medicaments specifiques;Les vermifuges se donnent deux fois par an.;;;;A traduire
+PHA-SPE-013;Medicaments specifiques;L'onguent calme les irritations de la peau.;;;;A traduire
+PHA-SPE-014;Medicaments specifiques;Ce collyre se met dans l'œil.;;;;A traduire
+PHA-SPE-015;Medicaments specifiques;Les comprimés de zinc aident contre la diarrhée.;;;;A traduire
+PHA-SPE-016;Medicaments specifiques;Le déparasitage est gratuit pour les enfants.;;;;A traduire
+PHA-SPE-017;Medicaments specifiques;Les contraceptifs sont disponibles ici.;;;;A traduire
+PHA-SPE-018;Medicaments specifiques;Les préservatifs protègent contre les infections.;;;;A traduire
+PHA-SPE-019;Medicaments specifiques;Les moustiquaires imprégnées sont en vente ici.;;;;A traduire
+PHA-SPE-020;Medicaments specifiques;Les tests de grossesse sont disponibles.;;;;A traduire
+PHA-CON-001;Conservation;Gardez les médicaments au frais et au sec.;;;;A traduire
+PHA-CON-002;Conservation;Ne mettez pas les médicaments au réfrigérateur sauf indication.;;;;A traduire
+PHA-CON-003;Conservation;Rangez les médicaments hors de portée des enfants.;;;;A traduire
+PHA-CON-004;Conservation;Gardez les sirops dans leur flacon d'origine.;;;;A traduire
+PHA-CON-005;Conservation;Fermez bien les flacons après usage.;;;;A traduire
+PHA-CON-006;Conservation;Jetez les médicaments périmés à la pharmacie.;;;;A traduire
+PHA-CON-007;Conservation;Ne jetez pas les médicaments dans la nature.;;;;A traduire
+PHA-CON-008;Conservation;Les vaccins doivent rester au froid.;;;;A traduire
+PHA-CON-009;Conservation;Ne conservez pas un sirop entamé trop longtemps.;;;;A traduire
+PHA-CON-010;Conservation;Vérifiez l'aspect du médicament avant de l'utiliser.;;;;A traduire
+PHA-PAT-001;Pharmacien et patient;Le pharmacien vous explique comment prendre le médicament.;;;;A traduire
+PHA-PAT-002;Pharmacien et patient;N'hésitez pas à poser des questions.;;;;A traduire
+PHA-PAT-003;Pharmacien et patient;Le pharmacien peut vous donner un conseil de santé.;;;;A traduire
+PHA-PAT-004;Pharmacien et patient;Revenez si vous avez un doute sur le traitement.;;;;A traduire
+PHA-PAT-005;Pharmacien et patient;Le pharmacien vérifie les ordonnances.;;;;A traduire
+PHA-PAT-006;Pharmacien et patient;Demandez conseil avant d'acheter un médicament.;;;;A traduire
+PHA-PAT-007;Pharmacien et patient;Le pharmacien connaît les interactions.;;;;A traduire
+PHA-PAT-008;Pharmacien et patient;Une bonne pharmacie conseille ses clients.;;;;A traduire
+PHA-PAT-009;Pharmacien et patient;Expliquez vos symptômes au pharmacien.;;;;A traduire
+PHA-PAT-010;Pharmacien et patient;Le pharmacien peut vous orienter vers un médecin.;;;;A traduire
+PHA-PAT-011;Pharmacien et patient;N'achetez pas de médicaments au marché.;;;;A traduire
+PHA-PAT-012;Pharmacien et patient;Les faux médicaments sont dangereux.;;;;A traduire
+PHA-PAT-013;Pharmacien et patient;Achetez uniquement dans les pharmacies agréées.;;;;A traduire
+PHA-PAT-014;Pharmacien et patient;Vérifiez l'emballage du médicament.;;;;A traduire
+PHA-PAT-015;Pharmacien et patient;La santé n'a pas de prix mais elle a des règles.;;;;A traduire
+PHA-AUT-001;Automedication;Ne vous soignez pas sans avis médical.;;;;A traduire
+PHA-AUT-002;Automedication;L'automédication peut être dangereuse.;;;;A traduire
+PHA-AUT-003;Automedication;Ne partagez pas vos médicaments avec les autres.;;;;A traduire
+PHA-AUT-004;Automedication;Un médicament pour un adulte n'est pas pour un enfant.;;;;A traduire
+PHA-AUT-005;Automedication;Les restes de traitement ne servent pas deux fois.;;;;A traduire
+PHA-AUT-006;Automedication;Ne reprenez pas un ancien traitement.;;;;A traduire
+PHA-AUT-007;Automedication;Consultez avant de prendre un antibiotique.;;;;A traduire
+PHA-AUT-008;Automedication;La fièvre ne se traite pas toujours avec les mêmes médicaments.;;;;A traduire
+PHA-AUT-009;Automedication;Les remèdes de rue peuvent être toxiques.;;;;A traduire
+PHA-AUT-010;Automedication;Un diagnostic précis évite les mauvais traitements.;;;;A traduire
+PHA-AUT-011;Automedication;Trop de médicaments peut aggraver la maladie.;;;;A traduire
+PHA-AUT-012;Automedication;Écoutez les conseils d'un professionnel.;;;;A traduire
+PHA-AUT-013;Automedication;Signalez les médicaments suspects.;;;;A traduire
+PHA-AUT-014;Automedication;La pharmacie est un service de santé.;;;;A traduire
+PHA-AUT-015;Automedication;Protégez votre famille des médicaments contrefaits.;;;;A traduire
