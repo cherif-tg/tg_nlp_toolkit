@@ -1,0 +1,116 @@
+ID;Sous-thematique;Phrase FR;Trad ewe L1;Trad ewe L2;Arbitrage;Statut
+VAC-INF-001;Informations generales;La vaccination protège ton enfant contre des maladies graves.;;;;A traduire
+VAC-INF-002;Informations generales;Les vaccins sont gratuits au centre de santé.;;;;A traduire
+VAC-INF-003;Informations generales;Le vaccin est sûr pour ton enfant.;;;;A traduire
+VAC-INF-004;Informations generales;La vaccination se fait dès la naissance.;;;;A traduire
+VAC-INF-005;Informations generales;Amène ton enfant à chaque rendez-vous de vaccination.;;;;A traduire
+VAC-INF-006;Informations generales;Le carnet de vaccination est très important.;;;;A traduire
+VAC-INF-007;Informations generales;Garde le carnet de vaccination en lieu sûr.;;;;A traduire
+VAC-INF-008;Informations generales;La vaccination protège aussi la communauté.;;;;A traduire
+VAC-INF-009;Informations generales;Un enfant vacciné est un enfant protégé.;;;;A traduire
+VAC-INF-010;Informations generales;La vaccination ne rend pas l'enfant malade.;;;;A traduire
+VAC-INF-011;Informations generales;Les infirmiers sont formés pour vacciner.;;;;A traduire
+VAC-INF-012;Informations generales;Pose toutes tes questions avant la vaccination.;;;;A traduire
+VAC-INF-013;Informations generales;La vaccination est gratuite pour tous les enfants.;;;;A traduire
+VAC-INF-014;Informations generales;Suis le calendrier vaccinal de ton enfant.;;;;A traduire
+VAC-INF-015;Informations generales;La vaccination est un droit de l'enfant.;;;;A traduire
+VAC-CAL-001;Calendrier vaccinal;Le vaccin BCG se donne à la naissance.;;;;A traduire
+VAC-CAL-002;Calendrier vaccinal;Le vaccin contre la polio se donne plusieurs fois.;;;;A traduire
+VAC-CAL-003;Calendrier vaccinal;L'enfant reçoit le vaccin à deux mois.;;;;A traduire
+VAC-CAL-004;Calendrier vaccinal;Le vaccin à quatre mois protège contre la diphtérie.;;;;A traduire
+VAC-CAL-005;Calendrier vaccinal;Le vaccin à six mois est important.;;;;A traduire
+VAC-CAL-006;Calendrier vaccinal;Le vaccin contre la rougeole se donne à neuf mois.;;;;A traduire
+VAC-CAL-007;Calendrier vaccinal;Le vaccin contre la fièvre jaune se donne à neuf mois.;;;;A traduire
+VAC-CAL-008;Calendrier vaccinal;Le vaccin contre la coqueluche protège la respiration.;;;;A traduire
+VAC-CAL-009;Calendrier vaccinal;Le vaccin contre le tétanos protège des blessures.;;;;A traduire
+VAC-CAL-010;Calendrier vaccinal;Le vaccin contre l'hépatite B protège le foie.;;;;A traduire
+VAC-CAL-011;Calendrier vaccinal;Le vaccin contre la pneumonie protège les poumons.;;;;A traduire
+VAC-CAL-012;Calendrier vaccinal;Le rappel se fait à dix-huit mois.;;;;A traduire
+VAC-CAL-013;Calendrier vaccinal;L'enfant doit recevoir tous les vaccins du calendrier.;;;;A traduire
+VAC-CAL-014;Calendrier vaccinal;Le vaccin contre la méningite protège le cerveau.;;;;A traduire
+VAC-CAL-015;Calendrier vaccinal;Chaque vaccin a son âge prévu.;;;;A traduire
+VAC-CAL-016;Calendrier vaccinal;Ne saute pas un rendez-vous de vaccination.;;;;A traduire
+VAC-CAL-017;Calendrier vaccinal;Si tu rates un rendez-vous reviens vite au centre.;;;;A traduire
+VAC-CAL-018;Calendrier vaccinal;Le calendrier vaccinal est affiché au centre de santé.;;;;A traduire
+VAC-CAL-019;Calendrier vaccinal;La vaccination continue pendant la croissance de l'enfant.;;;;A traduire
+VAC-CAL-020;Calendrier vaccinal;Le vaccin contre le paludisme est maintenant disponible.;;;;A traduire
+VAC-CEN-001;Au centre de sante;Le centre de santé vaccine les enfants le mardi.;;;;A traduire
+VAC-CEN-002;Au centre de sante;Apporte le carnet de vaccination de l'enfant.;;;;A traduire
+VAC-CEN-003;Au centre de sante;L'infirmier va vérifier le carnet de l'enfant.;;;;A traduire
+VAC-CEN-004;Au centre de sante;Pèse l'enfant avant la vaccination.;;;;A traduire
+VAC-CEN-005;Au centre de sante;L'infirmier va te poser quelques questions.;;;;A traduire
+VAC-CEN-006;Au centre de sante;Ton enfant a-t-il eu de la fièvre aujourd'hui ?;;;;A traduire
+VAC-CEN-007;Au centre de sante;Ton enfant a-t-il été malade cette semaine ?;;;;A traduire
+VAC-CEN-008;Au centre de sante;L'enfant est-il allergique à un médicament ?;;;;A traduire
+VAC-CEN-009;Au centre de sante;La vaccination se fait dans la salle de soins.;;;;A traduire
+VAC-CEN-010;Au centre de sante;Tiens bien ton enfant pendant la piqûre.;;;;A traduire
+VAC-CEN-011;Au centre de sante;La piqûre dure quelques secondes.;;;;A traduire
+VAC-CEN-012;Au centre de sante;C'est normal que l'enfant pleure un peu.;;;;A traduire
+VAC-CEN-013;Au centre de sante;L'infirmier note le vaccin dans le carnet.;;;;A traduire
+VAC-CEN-014;Au centre de sante;Vérifie que le carnet est bien rempli.;;;;A traduire
+VAC-CEN-015;Au centre de sante;Le prochain rendez-vous est noté dans le carnet.;;;;A traduire
+VAC-CEN-016;Au centre de sante;Reviens avec le carnet au prochain rendez-vous.;;;;A traduire
+VAC-CEN-017;Au centre de sante;L'équipe de vaccination visite aussi les villages.;;;;A traduire
+VAC-CEN-018;Au centre de sante;La vaccination de rattrapage est possible.;;;;A traduire
+VAC-CEN-019;Au centre de sante;Un enfant malade peut être vacciné plus tard.;;;;A traduire
+VAC-CEN-020;Au centre de sante;Le vaccin est vérifié avant d'être administré.;;;;A traduire
+VAC-APR-001;Apres la vaccination;Après la vaccination l'enfant peut avoir un peu de fièvre.;;;;A traduire
+VAC-APR-002;Apres la vaccination;La fièvre après le vaccin est normale.;;;;A traduire
+VAC-APR-003;Apres la vaccination;Donne du paracétamol si l'enfant a de la fièvre.;;;;A traduire
+VAC-APR-004;Apres la vaccination;Le bras peut être un peu rouge à l'endroit de la piqûre.;;;;A traduire
+VAC-APR-005;Apres la vaccination;L'enfant peut être fatigué après le vaccin.;;;;A traduire
+VAC-APR-006;Apres la vaccination;Surveille l'enfant pendant deux jours.;;;;A traduire
+VAC-APR-007;Apres la vaccination;Si la fièvre est très forte reviens au centre de santé.;;;;A traduire
+VAC-APR-008;Apres la vaccination;Ne mets pas d'onguent sur la piqûre.;;;;A traduire
+VAC-APR-009;Apres la vaccination;Laisse le bras propre et sec.;;;;A traduire
+VAC-APR-010;Apres la vaccination;Continue à allaiter l'enfant normalement.;;;;A traduire
+VAC-APR-011;Apres la vaccination;Les réactions graves au vaccin sont très rares.;;;;A traduire
+VAC-APR-012;Apres la vaccination;Signale tout problème au centre de santé.;;;;A traduire
+VAC-APR-013;Apres la vaccination;Le vaccin protège l'enfant après quelques semaines.;;;;A traduire
+VAC-APR-014;Apres la vaccination;Un enfant vacciné peut quand même attraper un rhume.;;;;A traduire
+VAC-APR-015;Apres la vaccination;Le vaccin ne donne pas la maladie.;;;;A traduire
+VAC-APR-016;Apres la vaccination;Observe la zone de la piqûre pendant trois jours.;;;;A traduire
+VAC-APR-017;Apres la vaccination;Une petite boule sous la peau peut apparaître.;;;;A traduire
+VAC-APR-018;Apres la vaccination;La boule disparaît toute seule.;;;;A traduire
+VAC-APR-019;Apres la vaccination;Ne frotte pas l'endroit de la piqûre.;;;;A traduire
+VAC-APR-020;Apres la vaccination;Repose l'enfant après la vaccination.;;;;A traduire
+VAC-HES-001;Hesitation et communication;Les vaccins ont protégé des millions d'enfants.;;;;A traduire
+VAC-HES-002;Hesitation et communication;Les rumeurs sur les vaccins sont fausses.;;;;A traduire
+VAC-HES-003;Hesitation et communication;Le vaccin ne rend pas stérile.;;;;A traduire
+VAC-HES-004;Hesitation et communication;Le vaccin ne contient pas de poison.;;;;A traduire
+VAC-HES-005;Hesitation et communication;Les effets secondaires sont rares et légers.;;;;A traduire
+VAC-HES-006;Hesitation et communication;Les vaccins sont fabriqués selon des règles strictes.;;;;A traduire
+VAC-HES-007;Hesitation et communication;Pose tes questions à l'infirmier en toute confiance.;;;;A traduire
+VAC-HES-008;Hesitation et communication;La vaccination est plus sûre que la maladie.;;;;A traduire
+VAC-HES-009;Hesitation et communication;Les maladies évitées sont bien plus dangereuses que le vaccin.;;;;A traduire
+VAC-HES-010;Hesitation et communication;Chaque enfant a le droit d'être protégé.;;;;A traduire
+VAC-HES-011;Hesitation et communication;Parle à l'agent de santé si tu as des doutes.;;;;A traduire
+VAC-HES-012;Hesitation et communication;La vaccination protège les générations futures.;;;;A traduire
+VAC-HES-013;Hesitation et communication;Ne crois pas tout ce qu'on raconte au marché.;;;;A traduire
+VAC-HES-014;Hesitation et communication;Renseigne-toi auprès du centre de santé.;;;;A traduire
+VAC-HES-015;Hesitation et communication;Ensemble protégeons nos enfants.;;;;A traduire
+VAC-MAL-001;Maladies evitees;La polio peut paralyser un enfant pour toujours.;;;;A traduire
+VAC-MAL-002;Maladies evitees;La rougeole peut être mortelle chez le petit enfant.;;;;A traduire
+VAC-MAL-003;Maladies evitees;Le tétanos attaque les muscles et les nerfs.;;;;A traduire
+VAC-MAL-004;Maladies evitees;La coqueluche fait tousser très fort.;;;;A traduire
+VAC-MAL-005;Maladies evitees;La diphtérie peut bloquer la respiration.;;;;A traduire
+VAC-MAL-006;Maladies evitees;La fièvre jaune est transmise par les moustiques.;;;;A traduire
+VAC-MAL-007;Maladies evitees;La méningite peut atteindre le cerveau.;;;;A traduire
+VAC-MAL-008;Maladies evitees;L'hépatite B peut abîmer le foie.;;;;A traduire
+VAC-MAL-009;Maladies evitees;La pneumonie est une infection grave des poumons.;;;;A traduire
+VAC-MAL-010;Maladies evitees;Ces maladies se préviennent par la vaccination.;;;;A traduire
+VAC-MAL-011;Maladies evitees;La vaccination a éliminé la variole dans le monde.;;;;A traduire
+VAC-MAL-012;Maladies evitees;Les maladies évitées ne circulent plus chez les vaccinés.;;;;A traduire
+VAC-MAL-013;Maladies evitees;Un enfant non vacciné est en danger.;;;;A traduire
+VAC-MAL-014;Maladies evitees;La vaccination protège avant même l'exposition.;;;;A traduire
+VAC-MAL-015;Maladies evitees;Protège ton enfant de ces maladies graves.;;;;A traduire
+VAC-LOG-001;Agents de sante et logistique;Vérifie la température du vaccin avant l'injection.;;;;A traduire
+VAC-LOG-002;Agents de sante et logistique;Les vaccins doivent rester au froid.;;;;A traduire
+VAC-LOG-003;Agents de sante et logistique;Note chaque vaccin administré dans le registre.;;;;A traduire
+VAC-LOG-004;Agents de sante et logistique;Vérifie la date de péremption du vaccin.;;;;A traduire
+VAC-LOG-005;Agents de sante et logistique;La chaîne du froid ne doit pas être interrompue.;;;;A traduire
+VAC-LOG-006;Agents de sante et logistique;Signale tout vaccin abîmé au superviseur.;;;;A traduire
+VAC-LOG-007;Agents de sante et logistique;Utilise une seringue neuve pour chaque enfant.;;;;A traduire
+VAC-LOG-008;Agents de sante et logistique;Jette les seringues usagées dans la boîte prévue.;;;;A traduire
+VAC-LOG-009;Agents de sante et logistique;Le registre de vaccination doit être complet.;;;;A traduire
+VAC-LOG-010;Agents de sante et logistique;Planifie la tournée de vaccination du village.;;;;A traduire
