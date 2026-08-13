@@ -38,7 +38,10 @@ LIVRES = [
 ]
 
 RE_PAGE = re.compile(r"^\d+\s*[!.]?$")
-RE_REF = re.compile(r"^[a-z?]{1,4}\s*\d{1,3}\s*[,.;:\-–—]\s*\d{1,3}")
+# Références croisées : "12, 7.", "a Do. 17, 24;", "15, 1—16, 4] MOSE II. 67"
+RE_REF = re.compile(r"^(?:[a-z?]{1,4}\s*\d{1,3}\s*[,.;:\-–—]\s*\d{1,3}|\d{1,3}\s*[,.;:\-–—]\s*\d{1,3})")
+# Notes courtes : "45. gbagbe" (numéro + mot court)
+RE_NOTE = re.compile(r"^\d{1,3}\.\s*[A-Za-zà-ÿ]{1,12}\.?$")
 RE_ENTETE = re.compile(r"^[A-ZÀ-Ü][A-ZÀ-Ü0-9\'’\- ]{1,40}\.?\s*\d*\.?$")
 # Un numéro de verset = 1-3 chiffres précédés d'une ponctuation forte
 RE_VERSE = re.compile(r"([.!?:\"\u201d\u2019])\s+(\d{1,3})\s+")
@@ -58,7 +61,7 @@ def extraire_livre(lignes, debut: int, fin: int, code: str, out, stats: dict):
     morceaux = []
     for ln in lignes[debut + 1:fin]:
         s = ln.strip()
-        if not s or RE_PAGE.match(s) or RE_REF.match(s):
+        if not s or RE_PAGE.match(s) or RE_REF.match(s) or RE_NOTE.match(s):
             continue
         if RE_ENTETE.match(s) and len(s) <= 45:
             continue
