@@ -24,6 +24,21 @@ contemporain (recommandé pour l'usage public) ; les sources historiques sont
 conservées telles quelles, avec leur orthographe, et documentées comme
 « éwé historique ».
 
+**POLITIQUE DE VARIANTES (actée le 14/08 avec Cherif, locuteur éwé)** :
+
+1. **Chaque source documente SA variante** (ex. Bible 1913 = éwé écrit
+   historique de la mission de Brême ; Riebstein 1926 = éwé togolais de
+   l'époque). À chaque intégration de source, sa variante est précisée.
+2. **Le corpus hérite de la variante de ses sources** — pas de mélange
+   silencieux.
+3. **Variante du vérificateur** : Cherif parle l'éwé **côtier de Lomé**
+   (utilisé pour la vérification humaine, sans en faire la norme du corpus).
+4. **Cible long terme (non engagée)** : se rapprocher de l'éwé **parlé
+   actuellement** (standard togolais moderne) — décision de spécialisation à
+   prendre plus tard.
+5. Le **kabiyè** est une langue distincte (famille gur), pas une variante de
+   l'éwé — extension séparée du projet.
+
 **Biais connu** : écart orthographique éwé 1913/1926 ↔ éwé moderne (tons,
 digraphies) — à quantifier et à réduire par normalisation orthographique en
 v1.x.
