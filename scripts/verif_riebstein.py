@@ -22,7 +22,7 @@ import re
 import statistics
 from collections import Counter
 
-RIEBSTEIN = ".openclaw/tmp/riebstein_lexique.tsv"
+RIEBSTEIN = "data/processed/riebstein-lexique-v2.tsv"
 SPLITS = [
     "data/processed/v0.2/train.tsv",
     "data/processed/v0.2/dev.tsv",
@@ -103,7 +103,7 @@ def main():
     a = lignes.append
     a("# Couverture du vocabulaire Riebstein dans le corpus v0.2")
     a("")
-    a("Rapport généré le 2026-08-14 par `scripts/verif_riebstein.py`.")
+    a("Rapport généré le 2026-08-14 par `scripts/verif_riebstein.py` (lexique v2 nettoyé).")
     a("")
     a("## Question")
     a("")
