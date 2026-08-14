@@ -1,6 +1,6 @@
 # Couverture du vocabulaire Riebstein dans le corpus v0.2
 
-Rapport généré le 2026-08-14 par `scripts/verif_riebstein.py`.
+Rapport généré le 2026-08-14 par `scripts/verif_riebstein.py` (lexique v2 nettoyé).
 
 ## Question
 
@@ -21,9 +21,9 @@ Le vocabulaire du lexique Riebstein (8 575 entrées FR→ÉWÉ, 1926) est-il
 |---|---|
 | Entrées Riebstein analysées | 6935 |
 | Mot FR présent dans le corpus | 2112 (30 %) |
-| ≥1 mot ÉWÉ présent dans le corpus | 5723 (83 %) |
-| Mot FR **et** ÉWÉ présents | 1841 (27 %) |
-| Ni FR ni ÉWÉ présents | 941 (14 %) |
+| ≥1 mot ÉWÉ présent dans le corpus | 5119 (74 %) |
+| Mot FR **et** ÉWÉ présents | 1679 (24 %) |
+| Ni FR ni ÉWÉ présents | 1383 (20 %) |
 
 ## Interprétation
 
@@ -36,30 +36,30 @@ Le vocabulaire du lexique Riebstein (8 575 entrées FR→ÉWÉ, 1926) est-il
 
 | Section | Entrées | FR présent | ÉWÉ présent |
 |---|---|---|---|
-| A | 687 | 175 (25 %) | 597 (87 %) |
-| B | 370 | 98 (26 %) | 273 (74 %) |
-| C | 902 | 268 (30 %) | 730 (81 %) |
-| D | 523 | 143 (27 %) | 455 (87 %) |
-| E | 623 | 132 (21 %) | 523 (84 %) |
-| F | 339 | 108 (32 %) | 265 (78 %) |
-| G | 223 | 55 (25 %) | 182 (82 %) |
-| H | 110 | 16 (15 %) | 94 (85 %) |
-| I | 271 | 78 (29 %) | 234 (86 %) |
+| A | 687 | 175 (25 %) | 550 (80 %) |
+| B | 370 | 98 (26 %) | 244 (66 %) |
+| C | 902 | 268 (30 %) | 654 (73 %) |
+| D | 523 | 143 (27 %) | 423 (81 %) |
+| E | 623 | 132 (21 %) | 481 (77 %) |
+| F | 339 | 108 (32 %) | 236 (70 %) |
+| G | 223 | 55 (25 %) | 163 (73 %) |
+| H | 110 | 16 (15 %) | 82 (75 %) |
+| I | 271 | 78 (29 %) | 208 (77 %) |
 | K | 4 | 1 (25 %) | 4 (100 %) |
-| L | 152 | 57 (38 %) | 127 (84 %) |
-| M | 392 | 127 (32 %) | 311 (79 %) |
-| N | 114 | 37 (32 %) | 91 (80 %) |
-| O | 146 | 61 (42 %) | 125 (86 %) |
-| P | 635 | 235 (37 %) | 489 (77 %) |
-| Q | 23 | 8 (35 %) | 19 (83 %) |
-| R | 489 | 172 (35 %) | 437 (89 %) |
-| S | 398 | 151 (38 %) | 334 (84 %) |
-| T | 324 | 115 (35 %) | 261 (81 %) |
-| U | 21 | 5 (24 %) | 19 (90 %) |
-| V | 173 | 68 (39 %) | 142 (82 %) |
+| L | 152 | 57 (38 %) | 105 (69 %) |
+| M | 392 | 127 (32 %) | 261 (67 %) |
+| N | 114 | 37 (32 %) | 79 (69 %) |
+| O | 146 | 61 (42 %) | 112 (77 %) |
+| P | 635 | 235 (37 %) | 434 (68 %) |
+| Q | 23 | 8 (35 %) | 17 (74 %) |
+| R | 489 | 172 (35 %) | 400 (82 %) |
+| S | 398 | 151 (38 %) | 293 (74 %) |
+| T | 324 | 115 (35 %) | 238 (73 %) |
+| U | 21 | 5 (24 %) | 14 (67 %) |
+| V | 173 | 68 (39 %) | 112 (65 %) |
 | W | 3 | 0 (0 %) | 2 (67 %) |
 | Y | 1 | 0 (0 %) | 1 (100 %) |
-| Z | 12 | 2 (17 %) | 8 (67 %) |
+| Z | 12 | 2 (17 %) | 6 (50 %) |
 
 ## Mots FR du Riebstein absents du corpus (top 25)
 
@@ -95,38 +95,38 @@ Le vocabulaire du lexique Riebstein (8 575 entrées FR→ÉWÉ, 1926) est-il
 
 | Mot | Fréquence dans Riebstein |
 |---|---|
-| î | 1289 |
-| îe | 235 |
-| îo | 165 |
-| faire | 125 |
-| îu | 84 |
-| gâ | 79 |
-| être | 72 |
-| gblê | 70 |
-| un- | 70 |
-| avoir | 69 |
-| être- | 53 |
-| gbâ | 52 |
-| mettre | 50 |
-| à- | 47 |
-| lô | 46 |
-| sesê | 44 |
-| agbalê | 43 |
-| -s | 43 |
-| une- | 40 |
-| dans | 39 |
-| p- | 36 |
-| gbegblê | 36 |
-| donner | 34 |
-| des- | 32 |
-| nù | 31 |
+| îe | 130 |
+| îo | 93 |
+| î | 53 |
+| gblê | 49 |
+| îu | 45 |
+| gâ | 45 |
+| gbâ | 38 |
+| agbalê | 26 |
+| gbegblê | 26 |
+| lô | 25 |
+| sesê | 23 |
+| nù | 17 |
+| yâ | 17 |
+| mô | 17 |
+| hlê | 17 |
+| hlâ | 16 |
+| nyô | 16 |
+| amegâ | 16 |
+| srô | 15 |
+| atsyô | 14 |
+| teîe | 14 |
+| mû | 13 |
+| miâ | 13 |
+| nyâ | 13 |
+| mê | 13 |
 
 ## Conclusion
 
 - **Vocabulaire FR** : 30 % des mots Riebstein sont présents
   dans le corpus (4823 absents, ex. « bourdon »).
-- **Vocabulaire ÉWÉ** : 83 % des traductions Riebstein ont au
-  moins un mot présent (19344 mots absents au total).
+- **Vocabulaire ÉWÉ** : 74 % des traductions Riebstein ont au
+  moins un mot présent (7316 mots absents au total).
 - Le corpus est **biblique** : les mots absents sont souvent du vocabulaire
   courant non-biblique (administration, santé, vie quotidienne) — c'est
   exactement la lacune que la diversification (piste 1) doit combler.
