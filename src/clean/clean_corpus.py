@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-clean_corpus.py — Nettoyage fin du corpus aligné bible éwé <-> Segond.
+clean_corpus.py v2 — Nettoyage fin du corpus aligné bible éwé <-> Segond.
 
-1. Retire les références croisées résiduelles dans les textes éwé
-   (ex. "Mat. 19, 4", "Heb, 4 io", "a Nyad. 12, 9") et les numéros
-   parasites en début de texte ("4Eye" -> "Eye").
-2. Calcule le ratio de longueur |ewe|/|fr| et marque les paires
-   suspectes (versets fusionnés par l'OCR : ratio > 2.5 ou < 0.5).
+v2 (calibré sur l'échantillon de vérification du locuteur natif) :
+- Nettoyage renforcé : guillemets allemands, caractères non-latins résiduels,
+  abréviations supplémentaires (Mem, RE...), fragments "> ,28."
+- Seuils de ratio resserrés (ok : 0.6 <= ratio <= 1.8) — le locuteur a montré
+  que les versets fusionnés (ratio median 2.6) sont la principale source d'erreur.
 
 Sortie : TSV (livre;chapitre;verset;fr;ewe;ratio;flag)
   flag = ok | a-verifier
@@ -19,12 +19,11 @@ Usage :
 import re
 import sys
 
-# Abréviations de livres (formes internationales, françaises et éwé)
 ABREV = ("Gen|Ex|Lev|Num|Deu|Jos|Jdg|Rut|Sam|Ki|Chr|Ezr|Neh|Est|Job|Psa|Ps|Pro|"
          "Ecc|Sng|Isa|Jer|Lam|Ezk|Dan|Hos|Jol|Amo|Oba|Jon|Mic|Nam|Hab|Zep|Hag|"
          "Zec|Mal|Mat|Mrk|Luk|Jhn|Act|Rom|Cor|Gal|Eph|Php|Col|Thes|Th|Tim|Ti|"
          "Tit|Phm|Heb|Jas|Pet|Pe|Jn|Jud|Rev|Nyad|Tes|Mo|Yes|Yer|Hez|Hoz|Yoe|"
-         "Zak|Mal|Abd|Yon|Nah|Hab|Sof|Agg|Zah|Mih|Mic")
+         "Zak|Mal|Abd|Yon|Nah|Hab|Sof|Agg|Zah|Mih|Mic|Mem|RE|Ru")
 RE_REF = re.compile(
     r"\b(?:[1-3]\s*)?(?:" + ABREV + r")\.?\s*,?\s*\d{1,3}\s*[,.:]\s*\d{1,3}"
     r"(?:\s*[-–—;]\s*\d{1,3}\s*[,.]?\s*\d{0,3})?"
@@ -35,15 +34,23 @@ RE_REF2 = re.compile(
 RE_DEBUT_NUM = re.compile(r"^\d{1,3}\s*")
 RE_ESPACES = re.compile(r"\s+")
 RE_PONCT = re.compile(r"[,;:]$")
+# Caractères résiduels à supprimer : guillemets allemands, symboles isolés
+RE_SYMB = re.compile(r"[„“”‘’\"°^<>~`=+*_#@$%&]")
+# Fragments de notes : "> ,28." ou ",28." après symbole
+RE_FRAG = re.compile(r">\s*,?\s*\d{1,3}\.?")
 
-RATIO_MAX = 2.5
-RATIO_MIN = 0.5
+RATIO_MAX = 1.8   # v2 : resserré (locuteur : ok median 1.01, corriger median 2.59)
+RATIO_MIN = 0.6
 
 
 def nettoie_ewe(txt: str) -> str:
-    txt = RE_DEBUT_NUM.sub("", txt)          # numéros parasites en tête
-    txt = RE_REF.sub(" ", txt)               # références bibliques
-    txt = RE_REF2.sub(" ", txt)              # fragments "e Tes. II"
+    txt = RE_DEBUT_NUM.sub("", txt)
+    txt = RE_REF.sub(" ", txt)
+    txt = RE_REF2.sub(" ", txt)
+    txt = RE_FRAG.sub(" ", txt)
+    txt = RE_SYMB.sub(" ", txt)
+    # lettres non-latines résiduelles (hors latin étendu)
+    txt = "".join(c if ord(c) <= 0x024F or c.isspace() else " " for c in txt)
     txt = RE_ESPACES.sub(" ", txt)
     txt = RE_PONCT.sub("", txt)
     return txt.strip()
@@ -54,7 +61,7 @@ def main(entree_path: str, sortie_path: str):
     with open(entree_path, encoding="utf-8") as f, \
          open(sortie_path, "w", encoding="utf-8") as out:
         out.write("livre\tchapitre\tverset\tfr\tewe\tratio\tflag\n")
-        next(f)  # en-tête
+        next(f)
         for ln in f:
             p = ln.rstrip("\n").split("\t")
             if len(p) < 6:
