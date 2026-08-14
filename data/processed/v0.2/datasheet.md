@@ -5,6 +5,29 @@
 - **Paires** : 16 050 « ok » (train 12 844 / dev 1 603 / test 1 603) + 7 499 candidates « à vérifier »
 - **Langues** : français (`fr`) ↔ éwé (`ee` / `ewe`)
 
+## Langues et variantes (14/08 — à compléter par les locuteurs)
+
+> ⚠️ Les variantes dialectales n'étaient pas précisées : corrigé le 14/08.
+> L'éwé fait partie du continuum **gbe** ; les variantes écrites et parlées
+> diffèrent (orthographe, tons, lexique).
+
+| Composant | Variante / statut |
+|---|---|
+| **Bible éwé 1913** | Éwé écrit standardisé par la mission de Brême au Togoland allemand (traducteur autochtone : Ludwig Adzaklo), orthographe de 1913 — **révisée depuis** (Bible Society of Ghana, v. révisée 2006) |
+| **Riebstein 1926** | Vocabulaire FR→ÉWÉ du Togo colonial — éwé togolais de l'époque (à confirmer : variante côtière ?) |
+| **Segond 1910** | Français standard du début XXe |
+| **Locuteur natif (vérification)** | Variante à préciser par Cherif (anlo, waci/watchi, côtière, autre ?) |
+| **NLLB (cible modèle)** | Éwé standard moderne écrit (`ewe_Latn`) |
+
+**Décision à acter** : la variante **cible** du projet = éwé standard togolais
+contemporain (recommandé pour l'usage public) ; les sources historiques sont
+conservées telles quelles, avec leur orthographe, et documentées comme
+« éwé historique ».
+
+**Biais connu** : écart orthographique éwé 1913/1926 ↔ éwé moderne (tons,
+digraphies) — à quantifier et à réduire par normalisation orthographique en
+v1.x.
+
 ## Changements v0.1 → v0.2
 
 1. **Calibrage sur l'échantillon de vérification** (100 paires vérifiées par
