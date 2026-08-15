@@ -24,6 +24,16 @@ Deploiement HuggingFace Spaces : voir demo/README.md (fichiers app.py
 local, aucun GPU requis en mode API).
 """
 
+# IMPORTANT (HuggingFace Spaces) : le paquet `spaces` (ZeroGPU) doit etre
+# importe AVANT tout paquet CUDA (torch, transformers). Sinon, au demarrage
+# du Space : RuntimeError "CUDA has been initialized before importing the
+# spaces package". Le try/except garde le lancement local sans `spaces`.
+try:
+    import spaces  # noqa: F401
+    print("spaces importe (ZeroGPU compatible)")
+except ImportError:
+    pass
+
 import os
 
 import gradio as gr
