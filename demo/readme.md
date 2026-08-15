@@ -10,8 +10,12 @@ La demo fonctionne dans **deux modes** :
    ```bash
    # terminal 1 : l'API
    uvicorn src.api.main:app --port 8000
-   # terminal 2 : la demo
+   # terminal 2 : la demo (syntaxe bash / Linux / Mac)
    API_URL=http://127.0.0.1:8000 python demo/app.py
+   ```
+   ```powershell
+   # terminal 2 : la demo (syntaxe PowerShell / Windows)
+   $env:API_URL="http://127.0.0.1:8000"; python demo/app.py
    ```
 2. **Mode local (autonome)** : la demo charge le modele elle-meme.
    ```bash
