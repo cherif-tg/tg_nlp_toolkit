@@ -34,10 +34,15 @@ if API_URL:
     import httpx
 
     def traduire(texte, src, tgt, beams=4):
-        """Appelle l'API REST. src/tgt : 'fr' ou 'ewe'."""
+        """Appelle l'API REST. src/tgt sont les libelles de l'interface
+        ("Francais"/"Ewe") : convertis en codes API ("fr"/"ewe")."""
         reponse = httpx.post(
             f"{API_URL}/translate",
-            json={"text": texte, "src": src, "tgt": tgt},
+            json={
+                "text": texte,
+                "src": CODES_INTERFACE[src],
+                "tgt": CODES_INTERFACE[tgt],
+            },
             timeout=120,
         )
         reponse.raise_for_status()
