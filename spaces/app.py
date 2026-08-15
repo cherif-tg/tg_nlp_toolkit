@@ -1,115 +1,92 @@
-"""Demo Gradio : traduction FR <-> EWE avec NLLB LoRA.
+"""Demo Gradio FR <-> EWE - version HuggingFace Spaces.
 
-Phase P3 du projet tg-nlp-toolkit.
+Compatible avec trois environnements :
 
-Deux modes de fonctionnement :
+1. Space CPU basic (gratuit) : modele sur CPU, traduction lente
+   (~5-15 s par phrase) mais fonctionnelle.
+2. Space ZeroGPU (GPU partage gratuit) : le GPU est alloue a chaque
+   appel via @spaces.GPU. `import spaces` doit etre fait avant tout
+   paquet CUDA (torch).
+3. Space GPU classique (T4) : modele sur GPU directement.
 
-1. MODE API (recommande) : la demo appelle l'API REST (src/api/main.py).
-   Un seul modele est charge en memoire (celui de l'API), la demo reste
-   legere et peut tourner sans GPU.
-   Activation : variable d'environnement API_URL.
-       API_URL=http://127.0.0.1:8000 python demo/app.py
-
-2. MODE LOCAL : la demo charge le modele elle-meme (autonome).
-   Activation : sans API_URL.
-       python demo/app.py
-
-Lancement local (mode local) :
-    pip install gradio transformers peft torch sentencepiece httpx
-    python demo/app.py
-    -> ouvre http://127.0.0.1:7860
-
-Deploiement HuggingFace Spaces : voir demo/README.md (fichiers app.py
-+ requirements.txt a la racine de l'espace, GPU T4 recommande en mode
-local, aucun GPU requis en mode API).
+La detection est automatique : `import spaces` reussi -> mode ZeroGPU,
+sinon mode CPU/GPU classique selon torch.cuda.is_available().
 """
 
-# IMPORTANT (HuggingFace Spaces) : le paquet `spaces` (ZeroGPU) doit etre
-# importe AVANT tout paquet CUDA (torch, transformers). Sinon, au demarrage
-# du Space : RuntimeError "CUDA has been initialized before importing the
-# spaces package". Le try/except garde le lancement local sans `spaces`.
 try:
     import spaces  # noqa: F401
-    print("spaces importe (ZeroGPU compatible)")
+    # Verifie que c'est bien le SDK ZeroGPU de HuggingFace (et pas un
+    # dossier/pacquet homonyme sans attribut GPU).
+    ZEROGPU = hasattr(spaces, "GPU")
 except ImportError:
-    pass
+    ZEROGPU = False
 
-import os
+import os  # noqa: E402
+import torch  # noqa: E402
+import gradio as gr  # noqa: E402
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM  # noqa: E402
+from peft import PeftModel  # noqa: E402
 
-import gradio as gr
+BASE = "facebook/nllb-200-distilled-600M"
+ADAPTER = "cheriftenga/nllb-200-distilled-600M-ewe-lora"
+CODES_NLLB = {"fr": "fra_Latn", "ewe": "ewe_Latn"}
 
-API_URL = os.environ.get("API_URL", "").rstrip("/")
+TOKENIZER = None
+MODELE = None
 
-if API_URL:
-    import httpx
 
-    def traduire(texte, src, tgt, beams=4):
-        """Appelle l'API REST. src/tgt sont les libelles de l'interface
-        ("Francais"/"Ewe") : convertis en codes API ("fr"/"ewe")."""
-        reponse = httpx.post(
-            f"{API_URL}/translate",
-            json={
-                "text": texte,
-                "src": CODES_INTERFACE[src],
-                "tgt": CODES_INTERFACE[tgt],
-            },
-            timeout=120,
+def charger_modele():
+    """Charge le modele une seule fois (cache en memoire)."""
+    global TOKENIZER, MODELE
+    if MODELE is None:
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        print(f"Chargement du modele sur {device} (patienter)...")
+        TOKENIZER = AutoTokenizer.from_pretrained(ADAPTER)
+        base = AutoModelForSeq2SeqLM.from_pretrained(BASE).to(device)
+        MODELE = PeftModel.from_pretrained(base, ADAPTER)
+        MODELE.eval()
+        print("Modele pret.")
+    return TOKENIZER, MODELE
+
+
+def _traduire(texte, src, tgt, beams=4):
+    """Traduction FR<->EWE. src/tgt : codes 'fr' ou 'ewe'."""
+    if not texte or not texte.strip():
+        return ""
+    tokenizer, modele = charger_modele()
+    device = modele.device
+    tokenizer.src_lang = CODES_NLLB[src]
+    enc = tokenizer(
+        texte, return_tensors="pt", truncation=True, max_length=128
+    ).to(device)
+    with torch.no_grad():
+        gen = modele.generate(
+            **enc,
+            forced_bos_token_id=tokenizer.convert_tokens_to_ids(
+                CODES_NLLB[tgt]
+            ),
+            max_new_tokens=128,
+            num_beams=beams,
         )
-        reponse.raise_for_status()
-        return reponse.json()["traduction"]
+    return tokenizer.batch_decode(gen, skip_special_tokens=True)[0]
 
-    CODES_INTERFACE = {"Francais": "fr", "Ewe": "ewe"}
-    NOTE_MODE = (
-        f"Mode : API REST ({API_URL}) - le modele est gere par l'API."
-    )
-else:
-    import torch
-    from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-    from peft import PeftModel
 
-    BASE = "facebook/nllb-200-distilled-600M"
-    ADAPTER = "cheriftenga/nllb-200-distilled-600M-ewe-lora"
-    CODES_INTERFACE = {"Francais": "fra_Latn", "Ewe": "ewe_Latn"}
-
-    def charger_modele():
-        """Charge le tokenizer et le modele (base + adaptateur LoRA)."""
-        tokenizer = AutoTokenizer.from_pretrained(ADAPTER)
-        base = AutoModelForSeq2SeqLM.from_pretrained(BASE)
-        modele = PeftModel.from_pretrained(base, ADAPTER)
-        modele.eval()
-        return tokenizer, modele
-
-    TOKENIZER, MODELE = charger_modele()
-
-    def traduire(texte, src, tgt, beams=4):
-        """Traduit un texte de la langue src vers la langue tgt."""
-        if not texte or not texte.strip():
-            return ""
-        TOKENIZER.src_lang = CODES_INTERFACE[src]
-        enc = TOKENIZER(
-            texte, return_tensors="pt", truncation=True, max_length=128
-        )
-        with torch.no_grad():
-            gen = MODELE.generate(
-                **enc,
-                forced_bos_token_id=TOKENIZER.convert_tokens_to_ids(
-                    CODES_INTERFACE[tgt]
-                ),
-                max_new_tokens=128,
-                num_beams=beams,
-            )
-        return TOKENIZER.batch_decode(gen, skip_special_tokens=True)[0]
-
-    NOTE_MODE = "Mode : local (le modele est charge dans cette demo)"
+# ZeroGPU : chaque appel de traduction recoit une allocation GPU.
+traduire = spaces.GPU(_traduire) if ZEROGPU else _traduire
 
 
 def interface_fr_ewe(fr, beams):
-    return traduire(fr, "Francais", "Ewe", beams)
+    return traduire(fr, "fr", "ewe", beams)
 
 
 def interface_ewe_fr(ewe, beams):
-    return traduire(ewe, "Ewe", "Francais", beams)
+    return traduire(ewe, "ewe", "fr", beams)
 
+
+NOTE_ENV = (
+    "Mode ZeroGPU (GPU partage)" if ZEROGPU else
+    "Mode CPU (Space gratuit) - la traduction peut prendre ~5-15 s"
+)
 
 with gr.Blocks(title="Traducteur Francais - Ewe (Togo)") as demo:
     gr.Markdown("# Traducteur Francais <-> Ewe")
@@ -118,7 +95,7 @@ with gr.Blocks(title="Traducteur Francais - Ewe (Togo)") as demo:
         "tg-nlp-toolkit v0.3 (65 640 paires). Projet de toolkit NLP pour "
         "les langues du Togo."
     )
-    gr.Markdown(NOTE_MODE)
+    gr.Markdown(NOTE_ENV)
     with gr.Tab("FR -> EWE"):
         fr_in = gr.Textbox(
             label="Francais",
