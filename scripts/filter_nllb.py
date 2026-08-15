@@ -44,15 +44,25 @@ CAR_EWE = set("ɖɛɔŋɣɸʋƒãẽĩõũɘɨ")
 DIGRAPHES_EWE = ("dz", "gb", "kp", "ny", "ts")
 # Caractères parasites (hors alphabet latin étendu + éwé) : rejeter
 RE_PARASITE = re.compile(r"[^A-Za-zÀ-ÖØ-öø-ÿɖɛɔŋɣɸʋƒãẽĩõũ'’.,;:!?\"() \-]")
-# Mots anglais/étrangers fréquents dans les fausses paires (côté éwé)
+# Mots anglais/étrangers fréquents dans les fausses paires (côté éwé) — liste élargie v3
 MOTS_ETRANGERS = {
     "the", "and", "not", "for", "with", "that", "this", "you", "have",
-    "are", "was", "come", "see", "god", "fear", "days", "will", "from",
-    "they", "their", "your", "our", "all", "one", "two", "new", "old",
-    "man", "men", "woman", "love", "life", "death", "house", "lord",
-    "jesus", "christ", "father", "mother", "son", "daughter", "king",
-    "queen", "name", "world", "heart", "hand", "eyes", "earth", "heaven",
-    "noone", "destooled", "rengbe", "undoro", "hliadzi", "hamesha", "tere",
+    "are", "was", "were", "will", "from", "they", "their", "your", "our",
+    "all", "one", "two", "new", "old", "man", "men", "woman", "women",
+    "love", "life", "death", "house", "god", "lord", "jesus", "christ",
+    "father", "mother", "son", "daughter", "king", "queen", "name", "world",
+    "heart", "hand", "eyes", "earth", "heaven", "noone", "destooled",
+    "rengbe", "undoro", "hliadzi", "hamesha", "tere",
+    "who", "what", "when", "where", "how", "why", "but", "can", "cannot",
+    "may", "shall", "should", "would", "could", "said", "say", "make",
+    "made", "know", "think", "give", "take", "go", "went", "come", "back",
+    "into", "upon", "under", "over", "again", "more", "most", "some", "any",
+    "many", "much", "such", "only", "very", "just", "also", "even", "still",
+    "well", "now", "then", "there", "here", "his", "her", "them", "day",
+    "days", "night", "water", "fire", "people", "land", "word", "thing",
+    "things", "great", "good", "bad", "fear", "won", "vs", "discover",
+    "defeats", "anyone", "diets", "eye", "fichajes", "de", "la", "el", "los",
+    "las", "un", "una", "kanye", "coinye", "ajagba", "kiladze", "tsintsadze",
 }
 RE_URL = re.compile(r"https?://|www\.")
 RE_CHIFFRES = re.compile(r"\d")
