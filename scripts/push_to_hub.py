@@ -12,10 +12,15 @@ Réglages HuggingFace > Access Tokens > "Write" token.
 """
 
 import argparse
+import os
 import sys
 
-REPO_ID = "cheriftenga/tg-nlp-toolkit-fr-ewe-v0.2"
-DOSSIER = "huggingface"
+# Chemin absolu du dossier de publication : fonctionne quel que soit le
+# répertoire depuis lequel le script est lancé.
+DOSSIER = os.path.normpath(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "huggingface")
+)
+REPO_ID = "cheriftenga/tg-nlp-toolkit-fr-ewe-v0.3"
 
 
 def main():
@@ -39,7 +44,11 @@ def main():
     print(f"📦 Création du dataset '{REPO_ID}' (privé={private})…")
     api.create_repo(repo_id=REPO_ID, repo_type="dataset", private=private, exist_ok=True)
 
-    print(f"⬆️ Upload du dossier '{DOSSIER}/'…")
+    print(f"⬆️ Upload du dossier '{DOSSIER}'…")
+    if not os.path.isdir(DOSSIER):
+        print(f"❌ Dossier introuvable : {DOSSIER}")
+        print("   Vérifie que le dossier huggingface/ existe à la racine du projet.")
+        sys.exit(1)
     api.upload_folder(repo_id=REPO_ID, repo_type="dataset", folder_path=DOSSIER)
 
     print()
