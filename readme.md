@@ -4,53 +4,106 @@ Toolkit NLP open-source pour les langues togolaises : traduction automatique
 **français ↔ éwé** (objectif principal), extension **kabiyè** prévue, ASR
 conditionnel en phase finale.
 
+## Modèle
+
+Traducteur FR ↔ ÉWÉ fine-tuné, publié sur HuggingFace :
+[`cheriftenga/nllb-200-distilled-600M-ewe-lora`](https://huggingface.co/cheriftenga/nllb-200-distilled-600M-ewe-lora)
+(NLLB-200-distilled-600M adapté par LoRA sur le corpus du projet).
+
+Résultats sur le test v0.3 (6 564 paires, jamais vues pendant
+l'entraînement) :
+
+| Direction | Baseline (zero-shot) | Fine-tune LoRA |
+|---|---|---|
+| FR → ÉWÉ | chrF++ 34,96 — BLEU 11,38 | **chrF++ 41,83 — BLEU 18,71** |
+| ÉWÉ → FR | chrF++ 33,76 — BLEU 13,53 | chrF++ 33,35 — BLEU 13,69 |
+
+Détails et exemples commentés : [résultats](docs/10-resultats-baseline.md)
+et [fine-tune](docs/11-resultats-finetune-lora.md). Les scores officiels
+seront recalculés sur un test de référence vérifié par des locuteurs
+natifs (300 paires, en cours).
+
 ## Corpus
 
-Corpus parallèle **FR↔Éwé v0.2** : **16 050 paires** (train 12 844 / dev 1 603 /
-test 1 603), alignées depuis deux sources domaine public :
+Corpus parallèle **FR ↔ ÉWÉ v0.3** : **65 640 paires** (train 52 512 /
+dev 6 564 / test 6 564), assemblées depuis :
 
-- Bible éwé 1913 (BFBS) — OCR normalisé (66 livres, 25 581 versets)
-- Bible Segond 1910 — 31 170 versets
+- **Bible éwé 1913 (BFBS) + Bible Segond 1910** — alignement verset par
+  verset, domaine public (~16 000 paires)
+- **OPUS NLLB ee-fr v1** — corpus miné, filtré par un pipeline de qualité
+  (éwé-ness + liste noire), licence ODC-By (~49 600 paires)
 
-**Statut** : exploratoire. Qualité estimée ~66 % de paires correctes sur un
-échantillon de 100 paires vérifié par un locuteur natif — voir la
-[datasheet](data/processed/v0.2/DATASHEET.md) pour le détail et les biais connus.
+**Statut** : qualité documentée honnêtement (≈66 % biblique, ≈72 % NLLB) —
+voir la [datasheet v0.3](data/processed/v0.3/DATASHEET.md). Un test de
+référence (300 paires, double vérification par locuteurs natifs) est en
+cours ; le dataset passera en public sur HuggingFace après validation.
 
 ## Utilisation
 
-### 1. Entraînement (Google Colab)
+### 1. Démo interactive (Gradio)
+
+```bash
+pip install gradio transformers peft torch sentencepiece httpx
+python demo/app.py                  # mode local (charge le modèle)
+API_URL=http://127.0.0.1:8000 python demo/app.py   # mode API (léger)
+```
+
+Une démo publique est disponible sur HuggingFace Spaces.
+
+### 2. API REST (FastAPI)
+
+```bash
+pip install fastapi "uvicorn[standard]" httpx transformers peft torch sentencepiece
+uvicorn src.api.main:app --reload --port 8000
+```
+
+- Documentation interactive : <http://127.0.0.1:8000/docs>
+- `POST /translate` : `{"text": "...", "src": "fr", "tgt": "ewe"}`
+
+### 3. CLI batch (campagnes, questionnaires)
+
+```bash
+python -m src.cli.translate --input messages.csv --src fr --tgt ewe --output messages_ewe.csv
+# option --api http://127.0.0.1:8000 pour passer par l'API
+```
+
+### 4. Entraînement (Google Colab, GPU T4 gratuit)
 
 | Notebook | Contenu |
 |---|---|
-| [`01-baseline-nllb.ipynb`](notebooks/01-baseline-nllb.ipynb) | Baseline NLLB-200 zero-shot (chrF++ / BLEU, FR→Éwé et Éwé→FR) |
-| [`02-finetune-lora.ipynb`](notebooks/02-finetune-lora.ipynb) | Fine-tuning LoRA de NLLB-200 sur le corpus |
+| [`01-baseline-nllb.ipynb`](notebooks/01-baseline-nllb.ipynb) | Baseline NLLB-200 zero-shot (chrF++ / BLEU, FR→ÉWÉ et ÉWÉ→FR) |
+| [`02-finetune-lora.ipynb`](notebooks/02-finetune-lora.ipynb) | Fine-tuning LoRA de NLLB-200 sur le corpus v0.3 |
 
-Les notebooks chargent les données **directement depuis ce dépôt** — aucun
-téléchargement manuel. Exécution sur GPU T4 gratuit (~10-20 min pour le
-fine-tuning).
+Les notebooks chargent les données directement depuis ce dépôt.
 
-### 2. Chargement du corpus
+### 5. Tests
 
-```python
-import pandas as pd
-
-train = pd.read_csv("data/processed/v0.2/train.tsv", sep="\t")
-# colonnes : livre, chapitre, verset, fr, ewe, ratio, flag
+```bash
+python tests/test_api.py        # API REST
+python tests/test_cli.py        # CLI batch
+python tests/test_demo_api.py   # démo (mode API)
 ```
 
 ## Structure
 
 | Dossier | Rôle |
 |---|---|
-| `data/processed/v0.2/` | Corpus actif (train / dev / test + candidates à vérifier) |
+| `data/processed/v0.3/` | Corpus actif (train / dev / test + datasheet) |
 | `data/grilles/` | 10 grilles de collecte (1 050 phrases FR) pour la traduction manuelle |
 | `data/licenses/` | Matrice et décisions de licence par source |
+| `src/api/` | API REST FastAPI (endpoint /translate) |
+| `src/cli/` | CLI de traduction batch |
 | `src/clean/` | Pipeline de nettoyage : normalisation, extraction, alignement |
-| `src/train/`, `src/evaluate/` | Entraînement et évaluation (à venir) |
+| `demo/` | Démo Gradio (modes local / API) |
+| `spaces/` | Fichiers de déploiement HuggingFace Spaces |
 | `notebooks/` | Notebooks Colab (baseline + fine-tuning) |
-| `docs/` | Étude, plan, guide pratique, revue des ressources |
+| `docs/` | Étude, guide d'utilisation, revue des ressources, résultats |
+| `tests/` | Tests automatisés (API, CLI, démo) |
 
 ## Licence
 
-Corpus publié sous **CC0-1.0** (sources domaine public, justificatifs dans
-`data/licenses/`). Code sous licence MIT.
+- **Corpus** : CC0-1.0 (sources domaine public) + ODC-By (OPUS NLLB,
+  attribution requise) — justificatifs dans `data/licenses/`
+- **Modèle** : CC-BY-NC-SA-4.0 (héritée de NLLB, Meta AI — usage non
+  commercial)
+- **Code** : MIT
