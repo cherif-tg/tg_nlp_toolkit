@@ -110,13 +110,14 @@ print("Device utilise :", device)"""),
 URL_TEST = "https://raw.githubusercontent.com/cherif-tg/tg_nlp_toolkit/main/data/processed/v0.3/test.tsv"
 
 try:
-    df = pd.read_csv(URL_TEST, sep="\\t")
+    df = pd.read_csv(URL_TEST, sep="\\t", on_bad_lines="skip")
     print("Test set charge :", len(df), "paires FR<->Ewe")
     print(df.head(3))
 except Exception as e:
     print("Telechargement GitHub impossible :", e)
     print("Solution : telecharge test.tsv depuis le repo et execute :")
-    print("  from google.colab import files; upload = files.upload()")"""),
+    print("  from google.colab import files; upload = files.upload()")
+    df = pd.read_csv("test.tsv", sep="\\t", on_bad_lines="skip")"""),
 
     code("""# Chargement du modele NLLB-200-distilled-600M
 # 600M parametres = version "distilled" (legere), adaptee a un GPU gratuit.
@@ -159,11 +160,18 @@ print("Fonction de traduction prete")"""),
 # On traduit les 6 564 phrases francaises du test set, puis on compare
 # aux traductions ewe de reference avec chrF++ et BLEU.
 
-preds_fr_ee = traduire(df["fr"].tolist(), src="fra_Latn", tgt="ewe_Latn")
-refs_ee = df["ewe"].tolist()
+# API moderne de sacrebleu (v2+) : sacrebleu.metrics.
+from sacrebleu.metrics import CHRF, BLEU
 
-chrf_fr_ee = sacrebleu.corpus.chrf(preds_fr_ee, [refs_ee])
-bleu_fr_ee = sacrebleu.corpus.bleu(preds_fr_ee, [refs_ee])
+chrf_metric = CHRF()
+bleu_metric = BLEU()
+
+# str() : se protege contre d'eventuelles valeurs non textuelles (NaN)
+preds_fr_ee = traduire([str(x) for x in df["fr"].tolist()], src="fra_Latn", tgt="ewe_Latn")
+refs_ee = [str(x) for x in df["ewe"].tolist()]
+
+chrf_fr_ee = chrf_metric.corpus_score(preds_fr_ee, [refs_ee])
+bleu_fr_ee = bleu_metric.corpus_score(preds_fr_ee, [refs_ee])
 
 print("FR -> EWE (zero-shot)")
 print("   chrF++ :", round(chrf_fr_ee.score, 2))
@@ -177,11 +185,11 @@ for i in range(3):
     print("Pred:", preds_fr_ee[i])"""),
 
     code("""# Evaluation EWE -> FR (sens inverse)
-preds_ee_fr = traduire(df["ewe"].tolist(), src="ewe_Latn", tgt="fra_Latn")
-refs_fr = df["fr"].tolist()
+preds_ee_fr = traduire([str(x) for x in df["ewe"].tolist()], src="ewe_Latn", tgt="fra_Latn")
+refs_fr = [str(x) for x in df["fr"].tolist()]
 
-chrf_ee_fr = sacrebleu.corpus.chrf(preds_ee_fr, [refs_fr])
-bleu_ee_fr = sacrebleu.corpus.bleu(preds_ee_fr, [refs_fr])
+chrf_ee_fr = chrf_metric.corpus_score(preds_ee_fr, [refs_fr])
+bleu_ee_fr = bleu_metric.corpus_score(preds_ee_fr, [refs_fr])
 
 print("EWE -> FR (zero-shot)")
 print("   chrF++ :", round(chrf_ee_fr.score, 2))
@@ -241,7 +249,7 @@ print("Dependances installees")"""),
     code("""# Imports
 import torch
 import pandas as pd
-import sacrebleu
+from sacrebleu.metrics import CHRF, BLEU
 import numpy as np
 from transformers import (AutoTokenizer, AutoModelForSeq2SeqLM,
                           Seq2SeqTrainer, Seq2SeqTrainingArguments,
@@ -256,7 +264,7 @@ print("Device utilise :", device)"""),
 BASE = "https://raw.githubusercontent.com/cherif-tg/tg_nlp_toolkit/main/data/processed/v0.3/"
 
 def charger(nom):
-    return pd.read_csv(BASE + nom, sep="\\t")
+    return pd.read_csv(BASE + nom, sep="\\t", on_bad_lines="skip")
 
 train = charger("train.tsv")
 dev   = charger("dev.tsv")
@@ -291,10 +299,10 @@ def tokeniser(sources, cibles):
     return {k: v.numpy() for k, v in enc.items()}
 
 train_ds = Dataset.from_list(
-    [tokeniser([fr], [ee]) for fr, ee in zip(train["fr"], train["ewe"])]
+    [tokeniser([str(fr)], [str(ee)]) for fr, ee in zip(train["fr"], train["ewe"])]
 )
 dev_ds = Dataset.from_list(
-    [tokeniser([fr], [ee]) for fr, ee in zip(dev["fr"], dev["ewe"])]
+    [tokeniser([str(fr)], [str(ee)]) for fr, ee in zip(dev["fr"], dev["ewe"])]
 )
 print("Datasets prets : train", len(train_ds), "| dev", len(dev_ds))
 print("Exemple de cles :", list(train_ds[0].keys()))"""),
@@ -322,7 +330,7 @@ def compute_metrics(eval_pred):
     labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
     decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
     refs = [[r] for r in decoded_labels]
-    chrf = sacrebleu.corpus.chrf(decoded_preds, refs)
+    chrf = CHRF().corpus_score(decoded_preds, refs)
     return {"chrF++": chrf.score}
 
 collator = DataCollatorForSeq2Seq(tokenizer, model=model, padding=True)
@@ -382,10 +390,10 @@ def traduire_model(textes, tgt="ewe_Latn", max_len=128, batch_size=16):
         resultats += tokenizer.batch_decode(gen, skip_special_tokens=True)
     return resultats
 
-preds = traduire_model(test["fr"].tolist())
-refs = test["ewe"].tolist()
-chrf = sacrebleu.corpus.chrf(preds, [refs])
-bleu = sacrebleu.corpus.bleu(preds, [refs])
+preds = traduire_model([str(x) for x in test["fr"].tolist()])
+refs = [str(x) for x in test["ewe"].tolist()]
+chrf = CHRF().corpus_score(preds, [refs])
+bleu = BLEU().corpus_score(preds, [refs])
 
 print("FR -> EWE apres fine-tuning LoRA")
 print("   chrF++ :", round(chrf.score, 2), " (a comparer avec la baseline)")
