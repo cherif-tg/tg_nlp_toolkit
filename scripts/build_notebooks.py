@@ -65,7 +65,7 @@ devra faire mieux que ces scores.
   - **BLEU** (métrique classique, plus stricte)
 
 > ⚠️ Le test set est chargé depuis le **repo GitHub public** du projet.
-> C'est le split `test.tsv` : 1 603 paires jamais utilisées pour l'entraînement."""),
+> C'est le split `test.tsv` : 6 564 paires jamais utilisées pour l'entraînement."""),
 
     code("""# Installation des bibliothèques nécessaires
 # - transformers : modèles HuggingFace (NLLB)
@@ -89,7 +89,7 @@ print("   (cuda = GPU, cpu = lent mais fonctionne)")"""),
 
     code("""# Chargement du jeu de test depuis le repo GitHub public
 # Les données du projet sont versionnées : ce notebook charge la version "main".
-URL_TEST = "https://raw.githubusercontent.com/cherif-tg/tg_nlp_toolkit/main/data/processed/v0.2/test.tsv"
+URL_TEST = "https://raw.githubusercontent.com/cherif-tg/tg_nlp_toolkit/main/data/processed/v0.3/test.tsv"
 
 try:
     df = pd.read_csv(URL_TEST, sep="\\t")
@@ -207,7 +207,7 @@ segond 1910) avec **LoRA** (Low-Rank Adaptation), pour dépasser la baseline.
 
 ## Pipeline
 
-1. Charger `train.tsv` (12 844 paires) et `dev.tsv` (1 603 paires) depuis GitHub
+1. Charger `train.tsv` (52 512 paires) et `dev.tsv` (6 564 paires) depuis GitHub
 2. Tokeniser les paires (langue source + langue cible NLLB)
 3. Ajouter les adaptateurs LoRA
 4. Entraîner avec `Seq2SeqTrainer` (HuggingFace)
@@ -234,7 +234,7 @@ print("🔧 Device :", device)
 # Sur Colab : Exécution > Changer le type d'exécution > T4 GPU"""),
 
     code("""# Chargement train / dev / test depuis le repo GitHub public
-BASE = "https://raw.githubusercontent.com/cherif-tg/tg_nlp_toolkit/main/data/processed/v0.2/"
+BASE = "https://raw.githubusercontent.com/cherif-tg/tg_nlp_toolkit/main/data/processed/v0.3/"
 
 def charger(nom):
     return pd.read_csv(BASE + nom, sep="\\t")
@@ -403,7 +403,7 @@ print("✅ Prêt pour l'export (voir instructions commentées)")"""),
     md("""## Lecture des résultats
 
 - Si **chrF++ fine-tune > chrF++ baseline** (notebook 1) : notre corpus apporte
-  un vrai gain → le corpus v0.2 est **utile et publiable**.
+  un vrai gain → le corpus v0.3 est **utile et publiable**.
 - Si le gain est faible : vérifier (a) le nombre d'époques, (b) le `r` de LoRA,
   (c) la taille du corpus. Les données restent la contrainte principale en
   low-resource.
