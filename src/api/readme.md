@@ -101,6 +101,37 @@ Erreurs :
 | `src/api/main.py` | Application FastAPI : routes, validation Pydantic, doc auto |
 | `src/api/inference.py` | Chargement du modele + fonction `traduire()` (reutilisable) |
 
+## Depannage
+
+### ModuleNotFoundError: No module named 'peft' (ou 'fastapi', 'uvicorn', 'httpx')
+
+Une des dependances de l'API n'est pas installee. Installe tout d'un coup :
+
+```powershell
+pip install fastapi "uvicorn[standard]" httpx transformers peft torch sentencepiece
+```
+
+Si la demo Gradio fonctionnait deja sur ta machine, il manque
+probablement seulement :
+
+```powershell
+pip install peft fastapi "uvicorn[standard]" httpx
+```
+
+### http://127.0.0.1:8000 ne repond pas
+
+Causes possibles, dans l'ordre :
+1. uvicorn a plante au demarrage (voir l'erreur dans le terminal 1) :
+   corrige l'erreur puis relance.
+2. Le modele se charge encore : attends le message
+   "Application startup complete" (telechargement ~2,4 Go la premiere fois).
+3. Le port est deja utilise : change de port avec `--port 8001`.
+
+### ModuleNotFoundError: No module named 'src'
+
+Lance uvicorn depuis la RACINE du projet (`togo-nlp-toolkit/`), pas depuis
+un autre dossier.
+
 ## Tests
 
 ```bash
