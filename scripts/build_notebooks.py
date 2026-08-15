@@ -125,9 +125,10 @@ MODEL_NAME = "facebook/nllb-200-distilled-600M"
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME).to(device)
 
-# Verification des codes de langue
-assert "fra_Latn" in tokenizer.additional_special_tokens, "francais absent"
-assert "ewe_Latn" in tokenizer.additional_special_tokens, "ewe absent"
+# Verification des codes de langue (API robuste, compatible toutes versions)
+# convert_tokens_to_ids renvoie l'id du token s'il existe, sinon unk_token_id.
+assert tokenizer.convert_tokens_to_ids("fra_Latn") != tokenizer.unk_token_id, "francais absent"
+assert tokenizer.convert_tokens_to_ids("ewe_Latn") != tokenizer.unk_token_id, "ewe absent"
 print("Modele charge - codes langue : fra_Latn (fr), ewe_Latn (ewe)")"""),
 
     code("""# Fonction de traduction en batch
