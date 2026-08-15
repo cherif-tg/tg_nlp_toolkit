@@ -130,7 +130,7 @@ def main():
     a("")
     a("## Interprétation")
     a("")
-    a("> ⚠️ La couverture **FR** mesure si le *mot* du lexique apparaît dans le")
+    a("> Attention : la couverture **FR** mesure si le *mot* du lexique apparaît dans le")
     a("> corpus biblique — mais un verset biblique ne « contient » pas le mot au")
     a("> même sens que l'entrée de dictionnaire. La couverture indique donc la")
     a("> **proximité lexicale**, pas la traduction du terme.")

@@ -59,7 +59,7 @@ Je, soussigné·e :
 
 **Nom** : ______________________________
 **Prénom** : ______________________________
-**Langue(s) maîtrisée(s)** : éwé (variante : ____________) ☐ français ☐ autre : ____
+**Langue(s) maîtrisée(s)** : éwé (variante : ____________) [ ] français [ ] autre : ____
 
 - [ ] J'ai lu et compris ce formulaire
 - [ ] J'accepte que mes contributions soient publiées sous licence CC0-1.0

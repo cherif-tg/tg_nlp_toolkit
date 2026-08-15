@@ -27,7 +27,7 @@ Le vocabulaire du lexique Riebstein (8 575 entrées FR→ÉWÉ, 1926) est-il
 
 ## Interprétation
 
-> ⚠️ La couverture **FR** mesure si le *mot* du lexique apparaît dans le
+> Attention: La couverture **FR** mesure si le *mot* du lexique apparaît dans le
 > corpus biblique — mais un verset biblique ne « contient » pas le mot au
 > même sens que l'entrée de dictionnaire. La couverture indique donc la
 > **proximité lexicale**, pas la traduction du terme.

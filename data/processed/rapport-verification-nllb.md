@@ -9,9 +9,9 @@
 
 | Statut | Nb | % |
 |---|---|---|
-| ✅ ok | 68 | 68 % |
-| 🔧 corriger | 25 | 25 % |
-| ❌ à-rejeter | 7 | 7 % |
+| ok | 68 | 68 % |
+| corriger | 25 | 25 % |
+| a-rejeter | 7 | 7 % |
 
 ## Nature des problèmes (« corriger »)
 

@@ -4,7 +4,7 @@
 de la **Bible éwé 1913** (British and Foreign Bible Society, domaine public) avec la
 **Bible Louis Segond 1910** (domaine public).
 
-> ⚠️ **Statut : v0.1 exploratoire, non vérifié par un locuteur natif.**
+> Attention: **Statut : v0.1 exploratoire, non vérifié par un locuteur natif.**
 > Un échantillon de 100 paires est en cours de vérification
 > (`echantillon-verification-100.csv`). Les textes éwé proviennent d'un OCR
 > de 1913 : les diacritiques (ɛ, ɔ, ŋ, ƒ) sont partiellement absents et des

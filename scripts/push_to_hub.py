@@ -32,27 +32,27 @@ def main():
     try:
         from huggingface_hub import HfApi, login
     except ImportError:
-        print("❌ huggingface_hub manquant. Installe :  pip install huggingface_hub")
+        print("Erreur : huggingface_hub manquant. Installe :  pip install huggingface_hub")
         sys.exit(1)
 
-    print("🔑 Connecte-toi à HuggingFace (colle ton token Write)…")
+    print("Connexion a HuggingFace (colle ton token Write)...")
     login()
 
     api = HfApi()
     private = not args.public
 
-    print(f"📦 Création du dataset '{REPO_ID}' (privé={private})…")
+    print(f"Creation du dataset '{REPO_ID}' (prive={private})...")
     api.create_repo(repo_id=REPO_ID, repo_type="dataset", private=private, exist_ok=True)
 
-    print(f"⬆️ Upload du dossier '{DOSSIER}'…")
+    print(f"Upload du dossier '{DOSSIER}'...")
     if not os.path.isdir(DOSSIER):
-        print(f"❌ Dossier introuvable : {DOSSIER}")
+        print(f"Erreur : dossier introuvable : {DOSSIER}")
         print("   Vérifie que le dossier huggingface/ existe à la racine du projet.")
         sys.exit(1)
     api.upload_folder(repo_id=REPO_ID, repo_type="dataset", folder_path=DOSSIER)
 
     print()
-    print("✅ Publication terminée !")
+    print("Publication terminee !")
     if private:
         print("   Le dataset est PRIVÉ. Vérifie-le, puis passe-le en public :")
         print("   https://huggingface.co/settings (onglet du dataset > Settings > Make public)")

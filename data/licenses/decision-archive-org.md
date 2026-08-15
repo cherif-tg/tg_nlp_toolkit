@@ -9,7 +9,7 @@
 
 ## Résultats vérifiés
 
-### 1. Bible éwé 1913 — ✅ DOMAINE PUBLIC (publiable)
+### 1. Bible éwé 1913 — DOMAINE PUBLIC (publiable)
 
 - Titre : « Biblia alo Nɔnɔlɔ kɔkɔe la le Eʋegbe me 1913 » (autre titre : « Nubabla Yeye la ƒe Agbalẽ, le Eʋegbe me »)
 - Éditeur : British and Foreign Bible Society (British kple Duta-Bibliahabɔbɔ), Londres, 1913

@@ -7,7 +7,7 @@
 
 ## Langues et variantes (14/08 — à compléter par les locuteurs)
 
-> ⚠️ Les variantes dialectales n'étaient pas précisées : corrigé le 14/08.
+> Attention: Les variantes dialectales n'étaient pas précisées : corrigé le 14/08.
 > L'éwé fait partie du continuum **gbe** ; les variantes écrites et parlées
 > diffèrent (orthographe, tons, lexique).
 

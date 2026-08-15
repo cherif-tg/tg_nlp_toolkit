@@ -38,7 +38,7 @@ Corpus de traduction **français ↔ éwé (ewe)** issu de deux composantes :
 | Bible éwé (BFBS) ↔ Segond 1910 | éwé / français | 1913 / 1910 | Domaine public → CC0-1.0 |
 | NLLB `fr-ee` filtré (OPUS / allenai) | éwé / français | 2023 | **ODC-By** (attribution) |
 
-## ⚠️ Statut honnête
+## Statut honnête
 
 **v0.3 exploratoire — non vérifié intégralement.** Qualité mesurée par
 échantillons vérifiés par un **locuteur natif éwé** :
@@ -50,8 +50,8 @@ Le bruit restant est principalement de l'**alignement approximatif**
 (corpus minés sur le web) — acceptable pour l'entraînement, pas pour
 l'évaluation : un **test de référence vérifié à 100 %** est en préparation.
 
-- ✅ **train / dev** : utilisables pour l'entraînement
-- ⚠️ **test** : approximatif — utiliser le test de référence pour des scores fiables
+- **train / dev** : utilisables pour l'entraînement
+- **test** : approximatif — utiliser le test de référence pour des scores fiables
 
 ## Statistiques (v0.3)
 
@@ -81,7 +81,7 @@ df = pd.read_csv("hf://datasets/cheriftenga/tg-nlp-toolkit-fr-ewe-v0.3/train.tsv
 print(df.head())
 ```
 
-Ou avec 🤗 `datasets` :
+Ou avec le package `datasets` de HuggingFace :
 
 ```python
 from datasets import load_dataset
