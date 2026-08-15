@@ -7,7 +7,9 @@
 **Jeu de test** : split test du corpus v0.3 (6 564 paires, jamais vues)
 **Notebook** : `notebooks/02-finetune-lora.ipynb`
 
-## Comparaison des scores (FR -> EWE)
+## Comparaison des scores
+
+### FR -> EWE
 
 | Methode | chrF++ | BLEU |
 |---|---|---|
@@ -18,6 +20,20 @@
 Le gain de +6,87 en chrF++ depasse l'objectif fixe (+5 points minimum pour
 valider l'utilite du corpus). Le BLEU progresse encore plus (+7,33), ce qui
 signifie que les traductions fines sont beaucoup plus proches des references.
+
+### EWE -> FR
+
+| Methode | chrF++ | BLEU |
+|---|---|---|
+| Baseline NLLB zero-shot | 33,76 | 13,53 |
+| **Fine-tuning LoRA** | **33,35** | **13,69** |
+| **Gain** | **-0,41** | **+0,16** |
+
+Pas de progression significative dans ce sens : le fine-tuning a surtout
+adapte le modele a PRODUIRE de l'ewe (FR -> EWE). Pour ameliorer EWE -> FR,
+il faudrait entrainer sur les paires inversees (labels en francais) : piste
+v2 du fine-tuning, non bloquante pour le projet (la direction principale
+du produit est FR -> EWE).
 
 ## Exemples commentes (FR -> EWE, apres fine-tuning)
 

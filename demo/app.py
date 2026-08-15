@@ -1,58 +1,91 @@
 """Demo Gradio : traduction FR <-> EWE avec NLLB LoRA.
 
 Phase P3 du projet tg-nlp-toolkit.
-Le modele est charge depuis HuggingFace : adaptateur LoRA
-(cheriftenga/nllb-200-distilled-600M-ewe-lora) sur le modele de base
-facebook/nllb-200-distilled-600M.
 
-Lancement local :
-    pip install gradio transformers peft torch sentencepiece
+Deux modes de fonctionnement :
+
+1. MODE API (recommande) : la demo appelle l'API REST (src/api/main.py).
+   Un seul modele est charge en memoire (celui de l'API), la demo reste
+   legere et peut tourner sans GPU.
+   Activation : variable d'environnement API_URL.
+       API_URL=http://127.0.0.1:8000 python demo/app.py
+
+2. MODE LOCAL : la demo charge le modele elle-meme (autonome).
+   Activation : sans API_URL.
+       python demo/app.py
+
+Lancement local (mode local) :
+    pip install gradio transformers peft torch sentencepiece httpx
     python demo/app.py
     -> ouvre http://127.0.0.1:7860
 
 Deploiement HuggingFace Spaces : voir demo/README.md (fichiers app.py
-+ requirements.txt a la racine de l'espace, GPU T4 recommande).
++ requirements.txt a la racine de l'espace, GPU T4 recommande en mode
+local, aucun GPU requis en mode API).
 """
 
-import torch
+import os
+
 import gradio as gr
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-from peft import PeftModel
 
-BASE = "facebook/nllb-200-distilled-600M"
-ADAPTER = "cheriftenga/nllb-200-distilled-600M-ewe-lora"
+API_URL = os.environ.get("API_URL", "").rstrip("/")
 
-CODES = {"Francais": "fra_Latn", "Ewe": "ewe_Latn"}
+if API_URL:
+    import httpx
 
-
-def charger_modele():
-    """Charge le tokenizer et le modele (base + adaptateur LoRA)."""
-    tokenizer = AutoTokenizer.from_pretrained(ADAPTER)
-    base = AutoModelForSeq2SeqLM.from_pretrained(BASE)
-    modele = PeftModel.from_pretrained(base, ADAPTER)
-    modele.eval()
-    return tokenizer, modele
-
-
-TOKENIZER, MODELE = charger_modele()
-
-
-def traduire(texte, src, tgt, beams=4):
-    """Traduit un texte de la langue src vers la langue tgt."""
-    if not texte or not texte.strip():
-        return ""
-    TOKENIZER.src_lang = CODES[src]
-    enc = TOKENIZER(
-        texte, return_tensors="pt", truncation=True, max_length=128
-    )
-    with torch.no_grad():
-        gen = MODELE.generate(
-            **enc,
-            forced_bos_token_id=TOKENIZER.convert_tokens_to_ids(CODES[tgt]),
-            max_new_tokens=128,
-            num_beams=beams,
+    def traduire(texte, src, tgt, beams=4):
+        """Appelle l'API REST. src/tgt : 'fr' ou 'ewe'."""
+        reponse = httpx.post(
+            f"{API_URL}/translate",
+            json={"text": texte, "src": src, "tgt": tgt},
+            timeout=120,
         )
-    return TOKENIZER.batch_decode(gen, skip_special_tokens=True)[0]
+        reponse.raise_for_status()
+        return reponse.json()["traduction"]
+
+    CODES_INTERFACE = {"Francais": "fr", "Ewe": "ewe"}
+    NOTE_MODE = (
+        f"Mode : API REST ({API_URL}) - le modele est gere par l'API."
+    )
+else:
+    import torch
+    from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+    from peft import PeftModel
+
+    BASE = "facebook/nllb-200-distilled-600M"
+    ADAPTER = "cheriftenga/nllb-200-distilled-600M-ewe-lora"
+    CODES_INTERFACE = {"Francais": "fra_Latn", "Ewe": "ewe_Latn"}
+
+    def charger_modele():
+        """Charge le tokenizer et le modele (base + adaptateur LoRA)."""
+        tokenizer = AutoTokenizer.from_pretrained(ADAPTER)
+        base = AutoModelForSeq2SeqLM.from_pretrained(BASE)
+        modele = PeftModel.from_pretrained(base, ADAPTER)
+        modele.eval()
+        return tokenizer, modele
+
+    TOKENIZER, MODELE = charger_modele()
+
+    def traduire(texte, src, tgt, beams=4):
+        """Traduit un texte de la langue src vers la langue tgt."""
+        if not texte or not texte.strip():
+            return ""
+        TOKENIZER.src_lang = CODES_INTERFACE[src]
+        enc = TOKENIZER(
+            texte, return_tensors="pt", truncation=True, max_length=128
+        )
+        with torch.no_grad():
+            gen = MODELE.generate(
+                **enc,
+                forced_bos_token_id=TOKENIZER.convert_tokens_to_ids(
+                    CODES_INTERFACE[tgt]
+                ),
+                max_new_tokens=128,
+                num_beams=beams,
+            )
+        return TOKENIZER.batch_decode(gen, skip_special_tokens=True)[0]
+
+    NOTE_MODE = "Mode : local (le modele est charge dans cette demo)"
 
 
 def interface_fr_ewe(fr, beams):
@@ -70,6 +103,7 @@ with gr.Blocks(title="Traducteur Francais - Ewe (Togo)") as demo:
         "tg-nlp-toolkit v0.3 (65 640 paires). Projet de toolkit NLP pour "
         "les langues du Togo."
     )
+    gr.Markdown(NOTE_MODE)
     with gr.Tab("FR -> EWE"):
         fr_in = gr.Textbox(
             label="Francais",
