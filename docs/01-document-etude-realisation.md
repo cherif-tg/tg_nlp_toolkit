@@ -6,7 +6,7 @@
 **Date** : 13 août 2026
 **Version** : 2.0 (corrigée et enrichie)
 
-> **Base** : Cahier des charges v1.0 (archivé dans `docs/00-cahier-des-charges-original.md`).
+> **Base** : Cahier des charges v1.0 (archivé dans `planning/`, document interne).
 > **Objet de la v2.0** : intégration des ajustements issus de la relecture critique — stratégie de licences, lutte contre le biais de registre, évaluation renforcée, attentes ASR réalistes, plan de collecte ciblée, éthique de la donnée.
 
 ---
@@ -370,7 +370,7 @@ Voir § 3.2.1. Livrable formel : `data/licenses/matrix.csv` + un fichier par sou
 togo-nlp-toolkit/
 ├── README.md                  # vue d'ensemble, badges, liens HF, guide de démarrage
 ├── docs/
-│   ├── 00-cahier-des-charges-original.md   # v1.0 archivée
+│   ├── 00-cahier-des-charges-original.md (planning/, interne)   # v1.0 archiveée
 │   ├── 01-document-etude-realisation.md    # ce document (v2.0)
 │   ├── 02-datasheet-corpus.md              # carte de données (à rédiger)
 │   └── 03-rapport-evaluation.md            # résultats, métriques, revue humaine
