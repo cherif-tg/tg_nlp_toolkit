@@ -121,8 +121,7 @@ train 52 512 / dev 6 564 / test 6 564), assemble depuis :
 
 ## Auteurs
 
-- Cherif TENGUE (Ecole Polytechnique de Lome, Togo)
-- Assistant de developpement : Sukuna (AutoClaw)
+- TENGA Cherif Abdel Azize (Ingenieur IA)
 
 ## Citation
 
