@@ -48,7 +48,8 @@ python demo/app.py                  # mode local (charge le modèle)
 API_URL=http://127.0.0.1:8000 python demo/app.py   # mode API (léger)
 ```
 
-Une démo publique est disponible sur HuggingFace Spaces.
+Une démo publique est disponible sur HuggingFace Spaces :
+<https://huggingface.co/spaces/cheriftenga/nllb-ewe-demo>
 
 ### 2. API REST (FastAPI)
 
