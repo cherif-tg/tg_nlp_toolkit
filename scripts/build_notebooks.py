@@ -307,7 +307,8 @@ dev_ds = Dataset.from_list(
 print("Datasets prets : train", len(train_ds), "| dev", len(dev_ds))
 print("Exemple de cles :", list(train_ds[0].keys()))"""),
 
-    code("""# Configuration LoRA
+    code("""import torch  # regle les conflits de paquets sur Colab
+# Configuration LoRA
 # On ajoute des adaptateurs sur les projections Q et V de l'attention
 # (cible classique pour les modeles seq2seq).
 lora_config = LoraConfig(
@@ -404,6 +405,33 @@ for i in range(3):
     print("FR :", test['fr'].iloc[i])
     print("Ref:", refs[i])
     print("Pred:", preds[i])"""),
+
+    code("""# Evaluation EWE -> FR avec le modele fine-tune (comparaison complete)
+def traduire_model_inverse(textes, tgt="fra_Latn", max_len=128, batch_size=16):
+    tokenizer.src_lang = "ewe_Latn"
+    resultats = []
+    for i in range(0, len(textes), batch_size):
+        lot = textes[i:i + batch_size]
+        enc = tokenizer(lot, return_tensors="pt", padding=True,
+                        truncation=True, max_length=max_len).to(device)
+        with torch.no_grad():
+            gen = model.generate(
+                **enc,
+                forced_bos_token_id=tokenizer.convert_tokens_to_ids(tgt),
+                max_new_tokens=max_len,
+                num_beams=4,
+            )
+        resultats += tokenizer.batch_decode(gen, skip_special_tokens=True)
+    return resultats
+
+preds_ee_fr = traduire_model_inverse([str(x) for x in test["ewe"].tolist()])
+refs_fr = [str(x) for x in test["fr"].tolist()]
+chrf_ee_fr = CHRF().corpus_score(preds_ee_fr, [refs_fr])
+bleu_ee_fr = BLEU().corpus_score(preds_ee_fr, [refs_fr])
+
+print("EWE -> FR apres fine-tuning LoRA")
+print("   chrF++ :", round(chrf_ee_fr.score, 2), " (a comparer avec la baseline)")
+print("   BLEU   :", round(bleu_ee_fr.score, 2))"""),
 
     code("""# Sauvegarde du modele + export vers HuggingFace (optionnel)
 # 1) Sauvegarde locale (dossier modele complet)
