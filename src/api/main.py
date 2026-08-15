@@ -28,6 +28,7 @@ Comment ca marche (resume) :
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel, Field
 
 from src.api.inference import CODES_NLLB, charger_modele, traduire
@@ -73,6 +74,14 @@ class TraductionResponse(BaseModel):
     src: str
     tgt: str
     traduction: str
+
+
+@app.get("/", include_in_schema=False)
+def racine():
+    """La racine redirige vers la documentation interactive (/docs).
+    Evite la page 404 quand on ouvre http://127.0.0.1:8000 dans un
+    navigateur (ex. lien affiche dans la demo Gradio)."""
+    return RedirectResponse(url="/docs")
 
 
 @app.get("/health")
