@@ -8,3 +8,6 @@ models/
 __pycache__/
 *.pyc
 .venv/
+
+# Planification interne (non publiee sur GitHub)
+planning/
