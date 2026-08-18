@@ -10,19 +10,26 @@ Traducteur FR ↔ ÉWÉ fine-tuné, publié sur HuggingFace :
 [`cheriftenga/nllb-200-distilled-600M-ewe-lora`](https://huggingface.co/cheriftenga/nllb-200-distilled-600M-ewe-lora)
 (NLLB-200-distilled-600M adapté par LoRA sur le corpus du projet).
 
-Résultats sur le test v0.3 (6 564 paires, jamais vues pendant
-l'entraînement) :
+### Scores officiels (test de référence vérifié, 241 paires)
 
 | Direction | Baseline (zero-shot) | Fine-tune LoRA |
 |---|---|---|
-| FR → ÉWÉ | chrF++ 34,96 — BLEU 11,38 | **chrF++ 41,83 — BLEU 18,71** |
+| FR → ÉWÉ | chrF++ 37,22 — BLEU 11,17 | **chrF++ 47,39 — BLEU 22,20** |
+| ÉWÉ → FR | chrF++ 38,14 — BLEU 14,92 | chrF++ 37,52 — BLEU 15,15 |
+
+**Gain FR → ÉWÉ : +10,17 chrF++ / +11,03 BLEU.** Le sens ÉWÉ → FR ne
+progresse pas (modèle v1 unidirectionnel) — cible du fine-tuning v2.
+
+### Sur le split test auto-aligné (6 564 paires, pour comparaison)
+
+| Direction | Baseline (zero-shot) | Fine-tune LoRA |
+|---|---|---|
+| FR → ÉWÉ | chrF++ 34,96 — BLEU 11,38 | chrF++ 41,83 — BLEU 18,71 |
 | ÉWÉ → FR | chrF++ 33,76 — BLEU 13,53 | chrF++ 33,35 — BLEU 13,69 |
 
 Détails et exemples commentés : [résultats](docs/10-resultats-baseline.md)
-et [fine-tune](docs/11-resultats-finetune-lora.md). Les scores officiels
-seront recalculés sur le test de référence vérifié par des locuteurs
-natifs (241 paires, double vérification — voir
-[rapport](data/processed/v0.3/rapport-verification-reference.md)).
+et [fine-tune](docs/11-resultats-finetune-lora.md). Référence vérifiée :
+[rapport](data/processed/v0.3/rapport-verification-reference.md).
 
 ## Corpus
 
