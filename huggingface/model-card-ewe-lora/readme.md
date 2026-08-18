@@ -33,20 +33,35 @@ thematiques en cours de traduction manuelle).
 
 ## Resultats
 
-Scores sur le split test du corpus v0.3 (6 564 paires, jamais vues pendant
-l'entrainement). **Attention** : ce test set est approxime (alignement
-automatique) ; les scores officiels seront recalcules sur un test de
-reference verifie par des locuteurs natifs (300 paires, 2 verificateurs).
+### Scores officiels (test de reference verifie, 241 paires)
+
+Scores mesures sur le **test de reference verifie a 100 %** (241 paires,
+double validation par 2 locuteurs natifs independants, 97 % de concordance
+entre verificateurs, arbitrage final) :
+
+| Methode | Direction | chrF++ | BLEU |
+|---|---|---|---|
+| Baseline NLLB zero-shot | FR -> EWE | 37,22 | 11,17 |
+| **Fine-tuning LoRA** | **FR -> EWE** | **47,39** | **22,20** |
+| Baseline NLLB zero-shot | EWE -> FR | 38,14 | 14,92 |
+| Fine-tuning LoRA | EWE -> FR | 37,52 | 15,15 |
+
+**Gain FR -> EWE : +10,17 chrF++ et +11,03 BLEU** par rapport au zero-shot :
+le corpus apporte un gain reel, fort et significatif.
+
+**EWE -> FR** : le modele v1 n'a ete entraine que dans le sens FR -> EWE ;
+le sens inverse ne progresse donc pas (leger recul en chrF++, +0,23 BLEU).
+Le fine-tuning v2 (bidirectionnel, paires inversees) vise a corriger ce
+point faible.
+
+### Scores sur le split test auto-aligne (6 564 paires, pour comparaison)
 
 | Methode | Direction | chrF++ | BLEU |
 |---|---|---|---|
 | Baseline NLLB zero-shot | FR -> EWE | 34,96 | 11,38 |
-| **Fine-tuning LoRA** | **FR -> EWE** | **41,83** | **18,71** |
+| Fine-tuning LoRA | FR -> EWE | 41,83 | 18,71 |
 | Baseline NLLB zero-shot | EWE -> FR | 33,76 | 13,53 |
-| Fine-tuning LoRA | EWE -> FR | (en cours de mesure) | - |
-
-Gain FR -> EWE : **+6,87 chrF++** et **+7,33 BLEU** par rapport au
-zero-shot — le corpus apporte un gain reel et significatif.
+| Fine-tuning LoRA | EWE -> FR | 33,35 | 13,69 |
 
 ### Exemples (FR -> EWE, apres fine-tuning)
 
@@ -102,9 +117,9 @@ train 52 512 / dev 6 564 / test 6 564), assemble depuis :
 - **Ewe ancien vs moderne** : une partie des donnees vient de la Bible
   1913 (orthographe ancienne). Le modele herite de ce melange ; la cible
   long terme est l'ewe parle actuel (Lome).
-- **Test approxime** : les scores cites utilisent un test set auto-aligne,
-  pas encore verifie par des locuteurs. Un test de reference (300 paires,
-  double verification) est en cours.
+- **Direction EWE -> FR** : le modele v1 est unidirectionnel (entraine
+  uniquement FR -> EWE) ; le sens inverse ne progresse pas (leger recul en
+  chrF++). Le fine-tuning v2 (bidirectionnel) vise a le corriger.
 - **Defauts connus** : redondances occasionnelles, artefacts de tokenisation
   (ex. "Wo- kpoe").
 - **Domaine** : principalement religieux/generaliste ; les domaines

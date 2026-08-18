@@ -83,14 +83,25 @@ Colonnes : `id`, `source` (bible | nllb), `fr`, `ewe` pour le split
 
 ## Résultats de modèles entraînés sur ce corpus
 
-NLLB-200-distilled-600M (baseline) vs fine-tuning LoRA sur ce corpus
-(évalués sur le split `test` auto-aligné - les scores sur la référence
-vérifiée seront publiés dans la model card) :
+### Scores officiels (sur le split `reference` vérifié, 241 paires)
+
+| Direction | Modèle | chrF++ | BLEU |
+|---|---|---|---|
+| FR -> éwé | NLLB baseline | 37,22 | 11,17 |
+| FR -> éwé | + LoRA fine-tune | **47,39** | **22,20** |
+| éwé -> FR | NLLB baseline | 38,14 | 14,92 |
+| éwé -> FR | + LoRA fine-tune | 37,52 | 15,15 |
+
+Gain FR -> éwé : **+10,17 chrF++** et **+11,03 BLEU** par rapport au
+zero-shot. Le sens éwé -> FR ne progresse pas (modèle v1 unidirectionnel) :
+prévu par le fine-tuning v2.
+
+### Sur le split `test` auto-aligné (6 564 paires, pour comparaison)
 
 | Direction | Modèle | chrF++ | BLEU |
 |---|---|---|---|
 | FR -> éwé | NLLB baseline | 34,96 | 11,38 |
-| FR -> éwé | + LoRA fine-tune | **41,83** | **18,71** |
+| FR -> éwé | + LoRA fine-tune | 41,83 | 18,71 |
 | éwé -> FR | NLLB baseline | 33,76 | 13,53 |
 | éwé -> FR | + LoRA fine-tune | 33,35 | 13,69 |
 

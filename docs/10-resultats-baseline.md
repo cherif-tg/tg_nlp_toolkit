@@ -5,6 +5,17 @@
 **Jeu de test** : split test du corpus v0.3 (6 564 paires, jamais vues par le modele)
 **Notebook** : `notebooks/01-baseline-nllb.ipynb`
 
+## Scores officiels (reference verifiee, 241 paires) - 18/08/2026
+
+Scores recalcules sur le test de reference **verifie a 100 %** (241 paires,
+double validation humaine, 97 % de concordance). Ces scores remplacent ceux
+du split auto-aligne comme reference officielle.
+
+| Direction | chrF++ | BLEU |
+|---|---|---|
+| FR -> EWE | 37,22 | 11,17 |
+| EWE -> FR | 38,14 | 14,92 |
+
 ## Scores
 
 | Direction | chrF++ | BLEU |

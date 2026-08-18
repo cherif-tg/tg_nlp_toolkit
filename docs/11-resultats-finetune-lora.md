@@ -7,6 +7,22 @@
 **Jeu de test** : split test du corpus v0.3 (6 564 paires, jamais vues)
 **Notebook** : `notebooks/02-finetune-lora.ipynb`
 
+## Scores officiels (reference verifiee, 241 paires) - 18/08/2026
+
+Scores recalcules sur le test de reference **verifie a 100 %** (241 paires,
+double validation humaine) :
+
+| Methode | Direction | chrF++ | BLEU |
+|---|---|---|---|
+| Baseline zero-shot | FR -> EWE | 37,22 | 11,17 |
+| **Fine-tuning LoRA** | **FR -> EWE** | **47,39** | **22,20** |
+| Baseline zero-shot | EWE -> FR | 38,14 | 14,92 |
+| Fine-tuning LoRA | EWE -> FR | 37,52 | 15,15 |
+
+Gain FR -> EWE : **+10,17 chrF++ / +11,03 BLEU** (encore plus fort que sur le
+split auto-aligne). Le sens EWE -> FR ne progresse pas (modele unidirectionnel) :
+cible du fine-tuning v2.
+
 ## Comparaison des scores
 
 ### FR -> EWE
