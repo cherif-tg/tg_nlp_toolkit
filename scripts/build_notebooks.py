@@ -462,11 +462,196 @@ sante/administration."""),
 ]
 
 
+# =========================================================================
+# NOTEBOOK 3 — SCORES OFFICIELS sur le test de reference verifie
+# =========================================================================
+n3 = [
+    md("""# 3. Scores officiels : baseline + LoRA v1 sur le test de reference verifie
+
+**Objectif** : produire les **scores officiels** du projet en evaluant
+le modele NLLB (baseline zero-shot) ET notre fine-tuning LoRA v1 sur le
+**test de reference verifie a 100 %** (241 paires validees par double
+verification humaine, 97 % de concordance entre verificateurs).
+
+## Pourquoi ce notebook ?
+
+Les scores des notebooks 1 et 2 sont mesures sur le split `test.tsv`
+(6 564 paires auto-alignees, donc approximatives). Ce notebook recalcule
+les scores sur la **reference verifiee** : ce sont les chiffres a publier
+(dataset card, model card, memoire).
+
+## Ce qu'on mesure
+
+- **Baseline** : `facebook/nllb-200-distilled-600M` (zero-shot)
+- **LoRA v1** : `cheriftenga/nllb-200-distilled-600M-ewe-lora` (publie sur HF)
+- 2 directions : FR -> EWE et EWE -> FR, sur les 241 paires de reference.
+
+## Metriques
+
+- **chrF++** : metrique principale (robuste a l'orthographe historique 1913)
+- **BLEU** : metrique classique (stricte, en complement)"""),
+
+    code("""# Installation des dependances
+!pip install -q transformers sacrebleu pandas sentencepiece peft accelerate
+
+print("Dependances installees")"""),
+
+    CELLULE_GPU,
+
+    code("""# Imports
+import torch
+import pandas as pd
+from sacrebleu.metrics import CHRF, BLEU
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from peft import PeftModel
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print("Device utilise :", device)"""),
+
+    code("""# Chargement du test de reference verifie (241 paires)
+# Fichier : huggingface/test-reference-final.tsv (sep="\\t")
+# Colonnes : id ; source ; fr ; ewe
+URL_REF = "https://raw.githubusercontent.com/cherif-tg/tg_nlp_toolkit/main/huggingface/test-reference-final.tsv"
+
+reference = pd.read_csv(URL_REF, sep="\\t", on_bad_lines="skip")
+print("Reference chargee :", len(reference), "paires")
+print("Repartition :", reference["source"].value_counts().to_dict())
+print(reference.head(3))"""),
+
+    md("""## Ordre d'execution
+
+On evalue d'abord la **baseline** (modele de base NLLB), puis on la
+decharge de la memoire GPU avant de charger le **LoRA v1**. Les deux
+modeles font 600M de parametres : on ne peut pas les garder en memoire
+en meme temps sur un T4 (16 Go)."""),
+
+    code("""# Fonction de traduction (reutilisable pour les deux modeles)
+def traduire(model, tokenizer, textes, src="fra_Latn", tgt="ewe_Latn",
+             max_len=128, batch_size=16):
+    tokenizer.src_lang = src
+    model.eval()
+    resultats = []
+    for i in range(0, len(textes), batch_size):
+        lot = textes[i:i + batch_size]
+        enc = tokenizer(lot, return_tensors="pt", padding=True,
+                        truncation=True, max_length=max_len).to(device)
+        with torch.no_grad():
+            gen = model.generate(
+                **enc,
+                forced_bos_token_id=tokenizer.convert_tokens_to_ids(tgt),
+                max_new_tokens=max_len,
+                num_beams=4,
+            )
+        resultats += tokenizer.batch_decode(gen, skip_special_tokens=True)
+    return resultats
+
+chrf_metric = CHRF()
+bleu_metric = BLEU()
+
+def scorer(preds, refs):
+    c = chrf_metric.corpus_score(preds, [refs])
+    b = bleu_metric.corpus_score(preds, [refs])
+    return round(c.score, 2), round(b.score, 2)
+
+print("Fonctions pretes")"""),
+
+    code("""# ===== 1. BASELINE (zero-shot) =====
+MODEL_NAME = "facebook/nllb-200-distilled-600M"
+tokenizer_base = AutoTokenizer.from_pretrained(MODEL_NAME)
+model_base = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME).to(device)
+
+# Verification des codes de langue (robuste, toutes versions transformers)
+assert tokenizer_base.convert_tokens_to_ids("fra_Latn") != tokenizer_base.unk_token_id
+assert tokenizer_base.convert_tokens_to_ids("ewe_Latn") != tokenizer_base.unk_token_id
+print("Baseline chargee")"""),
+
+    code("""# Evaluation baseline : FR -> EWE puis EWE -> FR
+fr_liste = [str(x) for x in reference["fr"].tolist()]
+ew_liste = [str(x) for x in reference["ewe"].tolist()]
+
+preds_base_fr_ee = traduire(model_base, tokenizer_base, fr_liste,
+                            src="fra_Latn", tgt="ewe_Latn")
+base_fr_ee = scorer(preds_base_fr_ee, ewe_liste)
+print("Baseline FR->EWE : chrF++", base_fr_ee[0], "| BLEU", base_fr_ee[1])
+
+preds_base_ee_fr = traduire(model_base, tokenizer_base, ewe_liste,
+                            src="ewe_Latn", tgt="fra_Latn")
+base_ee_fr = scorer(preds_base_ee_fr, fr_liste)
+print("Baseline EWE->FR : chrF++", base_ee_fr[0], "| BLEU", base_ee_fr[1])"""),
+
+    code("""# Liberation de la baseline (memoire GPU)
+del model_base, tokenizer_base
+torch.cuda.empty_cache()
+print("Memoire GPU liberee")"""),
+
+    code("""# ===== 2. FINE-TUNE LoRA v1 (publie sur HF) =====
+# L'adaptateur LoRA seul est publie (pas le modele de base) :
+# on charge le modele de base puis on applique l'adaptateur.
+LORA_REPO = "cheriftenga/nllb-200-distilled-600M-ewe-lora"
+BASE = "facebook/nllb-200-distilled-600M"
+
+base_model = AutoModelForSeq2SeqLM.from_pretrained(BASE)
+model_lora = PeftModel.from_pretrained(base_model, LORA_REPO).to(device)
+tokenizer_lora = AutoTokenizer.from_pretrained(LORA_REPO)
+print("LoRA v1 charge depuis HuggingFace")"""),
+
+    code("""# Evaluation LoRA v1 : FR -> EWE puis EWE -> FR
+preds_lora_fr_ee = traduire(model_lora, tokenizer_lora, fr_liste,
+                            src="fra_Latn", tgt="ewe_Latn")
+lora_fr_ee = scorer(preds_lora_fr_ee, ewe_liste)
+print("LoRA v1 FR->EWE : chrF++", lora_fr_ee[0], "| BLEU", lora_fr_ee[1])
+
+preds_lora_ee_fr = traduire(model_lora, tokenizer_lora, ewe_liste,
+                            src="ewe_Latn", tgt="fra_Latn")
+lora_ee_fr = scorer(preds_lora_ee_fr, fr_liste)
+print("LoRA v1 EWE->FR : chrF++", lora_ee_fr[0], "| BLEU", lora_ee_fr[1])"""),
+
+    code("""# ===== 3. Tableau comparatif officiel + sauvegarde =====
+resume = pd.DataFrame({
+    "Direction": ["FR->EWE", "FR->EWE", "EWE->FR", "EWE->FR"],
+    "Modele": ["Baseline", "LoRA v1", "Baseline", "LoRA v1"],
+    "chrF++": [base_fr_ee[0], lora_fr_ee[0], base_ee_fr[0], lora_ee_fr[0]],
+    "BLEU": [base_fr_ee[1], lora_fr_ee[1], base_ee_fr[1], lora_ee_fr[1]],
+})
+print("=== SCORES OFFICIELS (test de reference verifie, 241 paires) ===")
+print(resume.to_string(index=False))
+
+# Sauvegarde des predictions detaillees (utile pour le benchmark Google
+# Translate et pour l'analyse d'erreurs)
+resultats = pd.DataFrame({
+    "id": reference["id"],
+    "source": reference["source"],
+    "fr": reference["fr"],
+    "ewe": reference["ewe"],
+    "pred_fr_ee": preds_lora_fr_ee,
+    "pred_ee_fr": preds_lora_ee_fr,
+})
+resultats.to_csv("scores-officiels-predictions.csv", index=False, sep=";")
+resume.to_csv("scores-officiels-resume.csv", index=False, sep=";")
+print("Fichiers sauvegardes : scores-officiels-predictions.csv, scores-officiels-resume.csv")"""),
+
+    md("""## Lecture des resultats
+
+- **FR->EWE** : on attend le gain LoRA (environ +7 chrF++ par rapport a la
+  baseline, comme sur le split auto-aligne).
+- **EWE->FR** : c'est le sens faible (le modele v1 n'a ete entraine que sur
+  FR->EWE). Le fine-tuning v2 (bidirectionnel) vise a le corriger.
+- Ces scores remplacent les chiffres approximatifs des notebooks 1 et 2 :
+  reporte-les dans la model card et le README.
+
+**Prochaines etapes** :
+1. Benchmark Google Translate sur ces memes 241 paires (comparaison)
+2. Fine-tuning v2 bidirectionnel (notebook 02b) pour ameliorer EWE->FR
+3. Mise a jour de la model card avec ces scores officiels"""),
+]
+
+
 def main():
     os.makedirs("notebooks", exist_ok=True)
     cibles = {
         "notebooks/01-baseline-nllb.ipynb": notebook(n1, "Baseline NLLB FR-Ewe"),
         "notebooks/02-finetune-lora.ipynb": notebook(n2, "Fine-tuning LoRA NLLB FR-Ewe"),
+        "notebooks/03-eval-officielle.ipynb": notebook(n3, "Scores officiels sur reference verifiee"),
     }
     for chemin, nb in cibles.items():
         with open(chemin, "w", encoding="utf-8") as f:
