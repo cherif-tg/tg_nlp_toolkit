@@ -93,7 +93,7 @@ def main():
         )
 
     print("\n=== Passage en PUBLIC ===")
-    api.update_repo_visibility(repo_id=REPO_ID, repo_type="dataset", private=False)
+    api.update_repo_settings(repo_id=REPO_ID, repo_type="dataset", private=False)
     print(f"Dataset {REPO_ID} est maintenant PUBLIC.")
     print(f"https://huggingface.co/datasets/{REPO_ID}")
 
