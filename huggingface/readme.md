@@ -11,6 +11,7 @@ tags:
 - ewe
 - french
 - africa
+- togo
 task_categories:
 - translation
 language_details:
@@ -27,31 +28,50 @@ configs:
     path: dev.tsv
   - split: test
     path: test.tsv
+  - split: reference
+    path: test-reference-final.tsv
 ---
 
-# Corpus parallèle français ↔ éwé — v0.3 (exploratoire)
+# Corpus parallèle français - éwé v0.3
 
-Corpus de traduction **français ↔ éwé (ewe)** issu de deux composantes :
+Corpus de traduction **français - éwé (ewe)** pour le machine translation
+en contexte de faible ressource, construit à partir de deux composantes :
 
 | Composante | Langues | Année | Licence |
 |---|---|---|---|
-| Bible éwé (BFBS) ↔ Segond 1910 | éwé / français | 1913 / 1910 | Domaine public → CC0-1.0 |
+| Bible éwé (BFBS) - Segond 1910 | éwé / français | 1913 / 1910 | Domaine public - CC0-1.0 |
 | NLLB `fr-ee` filtré (OPUS / allenai) | éwé / français | 2023 | **ODC-By** (attribution) |
+
+## Test de référence vérifié (split `reference`)
+
+Le split **`reference`** contient **241 paires vérifiées à 100 %** par
+**double validation indépendante** (2 locuteurs natifs éwé, 97 % de
+concordance entre vérificateurs, arbitrage final) :
+
+- 124 paires Bible + 117 paires NLLB
+- Verdicts par paire : ok / corriger / à rejeter ; seules les paires
+  validées par les deux vérificateurs sont conservées
+- Archive complète des vérifications : `test-reference-verifs.csv`
+  dans le [repo GitHub](https://github.com/cherif-tg/tg_nlp_toolkit)
+  (`data/processed/v0.3/`), avec le rapport détaillé
+
+C'est la référence recommandée pour **évaluer** des systèmes FR-éwé :
+le split `test` (auto-aligné) est utile pour l'entraînement et la
+comparaison interne, mais la référence vérifiée est la seule base de
+scores fiables.
 
 ## Statut honnête
 
-**v0.3 exploratoire — non vérifié intégralement.** Qualité mesurée par
-échantillons vérifiés par un **locuteur natif éwé** :
+**Corpus d'entraînement exploratoire** - qualité mesurée par échantillons
+vérifiés par locuteur natif :
 
-- Bible : **~66 %** (100 paires vérifiées)
-- NLLB : **~72 %** estimé (100 paires vérifiées sur la version précédente, filtre v3 renforcé)
+- Bible : ~66 % de paires correctes (100 paires vérifiées)
+- NLLB filtré v3 : ~72 % (100 paires vérifiées, langues étrangères retirées)
 
 Le bruit restant est principalement de l'**alignement approximatif**
-(corpus minés sur le web) — acceptable pour l'entraînement, pas pour
-l'évaluation : un **test de référence vérifié à 100 %** est en préparation.
-
-- **train / dev** : utilisables pour l'entraînement
-- **test** : approximatif — utiliser le test de référence pour des scores fiables
+(corpus miné sur le web) - documenté en détail dans le datasheet.
+Acceptable pour l'entraînement ; d'où le test de référence vérifié
+pour l'évaluation.
 
 ## Statistiques (v0.3)
 
@@ -60,48 +80,76 @@ l'évaluation : un **test de référence vérifié à 100 %** est en préparatio
 | train | 52 512 | 12 812 | 39 700 |
 | dev | 6 564 | 1 601 | 4 963 |
 | test | 6 564 | 1 601 | 4 963 |
-| **Total** | **65 640** | 16 014 | 49 626 |
+| reference (vérifiée) | **241** | 124 | 117 |
+| **Total** | 65 640 | 16 014 | 49 626 |
 
-Colonnes : `source` (bible | nllb), `fr`, `ewe`.
+Colonnes : `id`, `source` (bible | nllb), `fr`, `ewe` pour le split
+`reference` ; `source`, `fr`, `ewe` pour les autres.
+
+## Résultats de modèles entraînés sur ce corpus
+
+NLLB-200-distilled-600M (baseline) vs fine-tuning LoRA sur ce corpus
+(évalués sur le split `test` auto-aligné - les scores sur la référence
+vérifiée seront publiés dans la model card) :
+
+| Direction | Modèle | chrF++ | BLEU |
+|---|---|---|---|
+| FR -> éwé | NLLB baseline | 34,96 | 11,38 |
+| FR -> éwé | + LoRA fine-tune | **41,83** | **18,71** |
+| éwé -> FR | NLLB baseline | 33,76 | 13,53 |
+| éwé -> FR | + LoRA fine-tune | 33,35 | 13,69 |
+
+Modèle publié : [cheriftenga/nllb-200-distilled-600M-ewe-lora](https://huggingface.co/cheriftenga/nllb-200-distilled-600M-ewe-lora)
 
 ## Licence
 
-- Composante Bible : **domaine public** → publiée sous **CC0-1.0**
-- Composante NLLB : **ODC-By** (Open Data Commons Attribution) — attribution
+- Composante Bible : **domaine public** - publiée sous **CC0-1.0**
+- Composante NLLB : **ODC-By** (Open Data Commons Attribution) - attribution
   requise : *NLLB dataset (allenai) via OPUS, ODC-By*
-- Le tout est redistribué sous **CC0-1.0** avec attribution de la composante
-  NLLB (l'attribution ODC-By est conservée dans cette fiche).
+- L'ensemble est redistribué sous **CC0-1.0** avec attribution de la
+  composante NLLB (l'attribution ODC-By est conservée dans cette fiche).
+- Le split `reference` (vérifications humaines) : **CC0-1.0**.
 
 ## Utilisation
-
-```python
-import pandas as pd
-
-df = pd.read_csv("hf://datasets/cheriftenga/tg-nlp-toolkit-fr-ewe-v0.3/train.tsv", sep="\t")
-print(df.head())
-```
-
-Ou avec le package `datasets` de HuggingFace :
 
 ```python
 from datasets import load_dataset
 
 ds = load_dataset("cheriftenga/tg-nlp-toolkit-fr-ewe-v0.3")
+print(ds["reference"][0])
+```
+
+Ou lecture directe des TSV :
+
+```python
+import pandas as pd
+
+df = pd.read_csv("hf://datasets/cheriftenga/tg-nlp-toolkit-fr-ewe-v0.3/train.tsv", sep="\t")
 ```
 
 ## Remarques sur les données
 
 - **Registre** : biblique (Bible) + hétérogène web miné (NLLB : religieux,
-  vie courante, actualités) — pas encore de domaine santé/administration ciblé
-- **Orthographe** : éwé historique (1913) et éwé moderne (NLLB) mélangés —
-  chaque paire garde la variante de sa source
-- **Lexique Riebstein** (8 574 entrées FR→ÉWÉ, domaine public) : composant
+  vie courante, actualités)
+- **Orthographe** : éwé historique (1913) et éwé moderne (NLLB) mélangés -
+  chaque paire garde la variante de sa source (politique de variantes :
+  une source = sa variante documentée)
+- **Variantes** : le vérificateur principal du split `reference` est
+  locuteur de l'éwé côtier de Lomé
+- **Lexique Riebstein** (8 574 entrées FR-éwé, domaine public) : composant
   séparé dans le dépôt GitHub
-- **Pipeline** : https://github.com/cherif-tg/tg_nlp_toolkit
+- **Pipeline complet** : https://github.com/cherif-tg/tg_nlp_toolkit
   (`src/clean/` + `scripts/filter_nllb.py` + `scripts/assemble_v03.py`)
+
+## Auteur
+
+TENGA Cherif Abdel Azize - projet de fin d'études (École Polytechnique
+de Lomé, Togo). Corpus construit avec documentation honnête de la
+qualité : chaque taux annoncé est mesuré sur échantillon vérifié.
 
 ## Prochaines étapes
 
-1. Test de référence vérifié (300 paires, 2+ locuteurs) → évaluation fiable
-2. Fine-tuning NLLB-200 (LoRA) → scores de référence
-3. Traduction manuelle des grilles (10 thèmes santé/administration)
+1. Scores officiels des modèles sur le split `reference` (241 paires)
+2. Fine-tuning v2 bidirectionnel (éwé -> FR en cours d'amélioration)
+3. Extension : grilles thématiques santé/administration (10 thèmes,
+   traduction manuelle en cours) + composante audio (ASR)

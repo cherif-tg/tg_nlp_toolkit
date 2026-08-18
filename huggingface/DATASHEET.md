@@ -1,47 +1,70 @@
-# Datasheet — Corpus parallèle FR↔Éwé v0.2 (exploratoire, calibré)
+# Datasheet - Corpus parallèle FR-éwé v0.3
 
-- **Version** : 0.2 (exploratoire — partiellement vérifié par locuteur natif)
-- **Date** : 2026-08-14
-- **Paires** : 16 050 « ok » (train 12 844 / dev 1 603 / test 1 603) + 7 499 candidates « à vérifier »
-- **Langues** : français (`fr`) ↔ éwé (`ee` / `ewe`)
+- **Version** : 0.3 (exploratoire - vérifié par échantillons + référence
+  humaine complète)
+- **Date** : 2026-08-18 (publication publique)
+- **Paires** : **65 640** (train 52 512 / dev 6 564 / test 6 564) +
+  **test de référence vérifié : 241 paires** (split `reference`)
+- **Colonnes** : `source` (bible | nllb), `fr`, `ewe` (+ `id` pour le
+  split `reference`)
 
-## Changements v0.1 → v0.2
+## Composants
 
-1. **Calibrage sur l'échantillon de vérification** (100 paires vérifiées par
-   Cherif, locuteur natif) : seuils de ratio resserrés
-   (ok : 0,6 ≤ |ewe|/|fr| ≤ 1,8 au lieu de 0,5–2,5). Le locuteur a montré que
-   les versets fusionnés par l'OCR (ratio médian 2,6) sont la principale
-   source d'erreur.
-2. **Nettoyage renforcé** : guillemets allemands, symboles résiduels,
-   caractères non-latins, abréviations supplémentaires (Mem, RE…), fragments
-   de notes (« > ,28. »).
+| Composant | Paires | Provenance | Variante | Licence |
+|---|---|---|---|---|
+| Bible 1913 - Segond 1910 | 16 014 | archives (domaine public) | éwé historique (mission de Brême) | CC0-1.0 |
+| NLLB filtré v3 | 49 626 | OPUS `NLLB.ee-fr` (allenai/nllb) | éwé moderne + textes minés | **ODC-By** (attribution) |
+| Test de référence vérifié | 241 | échantillon du split test | double vérification humaine | CC0-1.0 |
+| Lexique Riebstein v2 | 8 574 (composant séparé) | archive.org (domaine public) | éwé togolais 1926 | Domaine public |
 
-## Qualité mesurée (échantillon de 100 paires, locuteur natif)
+## Qualité mesurée
 
-| Statut locuteur | v0.1 flag ok | v0.2 flag ok |
+| Composant | Échantillon vérifié | Qualité |
 |---|---|---|
-| ok | 45/70 (64 %) | 37/56 (66 %) |
-| corriger | 14 | 11 |
-| à rejeter | 11 | 8 |
+| Bible (v0.2) | 100 paires, locuteur natif | ~66 % |
+| NLLB (v2-v3) | 100 paires, locuteur natif | 68 % (v2) - ~72 % estimé (v3) |
+| Test de référence | 300 paires, **double vérification** | 241 validées (80,3 %) |
 
-**Interprétation** : ~2/3 des paires du noyau sont correctes. Les erreurs
-restantes sont principalement des **fausses paires** (verset éwé aligné avec
-le mauvais verset français — indétectable par la longueur seule) et des
-résidus résiduels. Ce taux est **documenté honnêtement** : le corpus est un
-outil d'entraînement (le modèle tolère ~30 % de bruit), mais **le test set
-doit être vérifié par un locuteur avant toute publication de scores**.
+### Détail de la vérification du test de référence (18/08/2026)
 
-## Recommandation (prochaine étape)
+- Protocole : 2 locuteurs natifs indépendants, verdicts par paire
+  (ok / corriger / à rejeter), arbitrage final
+- Concordance entre vérificateurs : 97 % (après normalisation)
+- 238 paires ok/ok + 3 validées à l'arbitrage = **241 paires de référence**
+- 59 paires exclues : mauvaise traduction (14), correspondance
+  approximative (7), signes/chiffres parasites OCR (8), corriger (26),
+  divers (4)
+- Archive complète : `test-reference-verifs.csv` dans le repo GitHub
+  (`data/processed/v0.3/`), rapport : `rapport-verification-reference.md`
 
-- **train/dev** : utilisables en l'état (bruit toléré par l'entraînement)
-- **test** : à vérifier intégralement par le locuteur (~1 600 paires, ou un
-  sous-ensemble de référence de 300 paires) avant de publier des scores —
-  sinon les métriques sous-estiment la vraie qualité du modèle.
+## Biais connus
 
-## 3-9. (inchangé par rapport à v0.1, voir `../v0.1/DATASHEET.md`)
+1. **Registre** : la composante Bible est biblique ; la composante NLLB est
+   hétérogène (web miné, religieux, vie courante) avec ~28 % de bruit
+   résiduel (alignements approximatifs).
+2. **Orthographe** : éwé historique (1913/1926) vs éwé moderne (NLLB)
+   mélangés - chaque paire garde la variante de sa source (politique de
+   variantes : une source = sa variante documentée).
+3. **Variantes régionales** : le vérificateur principal est locuteur de
+   l'éwé côtier de Lomé ; la Bible 1913 documente la variante de la
+   mission de Brême.
+4. **Licence** : ODC-By impose l'attribution (dataset card) ; pas de
+   redistribution des sources NLLB brutes non filtrées.
 
-- **Collecte** : Bible éwé 1913 (BFBS, domaine public) + Segond 1910 (domaine public)
-- **Prétraitement** : pipeline `src/clean/` (normalisation cyrillique, extraction 66 livres, alignement DP)
-- **Biais** : registre biblique uniquement, orthographe 1913, diacritiques partiels
-- **Licence** : domaine public — publiable ; diffusion prévue HuggingFace (cheriftenga)
-- **Maintenance** : Cherif (linguistique) + Sukuna (pipeline) ; seed 42
+## Recommandations d'usage
+
+- **Entraînement** : splits `train` / `dev` (bruit documenté, acceptable)
+- **Évaluation / benchmark** : split `reference` uniquement (241 paires
+  vérifiées à 100 %) - ne jamais évaluer sur une quelconque partie du
+  `train`
+- **JW300** : source connue mais volontairement NON incluse (licence
+  restrictive) - entraînement uniquement, jamais publiée
+
+## Historique des versions
+
+| Version | Date | Contenu |
+|---|---|---|
+| v0.1 | 13/08/2026 | 16 050 paires "ok" (Bible + NLLB v1) |
+| v0.2 | 14/08/2026 | Calibrage par échantillon vérifié (100 paires) |
+| v0.3 | 15/08/2026 | + NLLB filtré v3 : 65 640 paires |
+| v0.3-public | 18/08/2026 | + split `reference` (241 paires vérifiées) - publication publique |
