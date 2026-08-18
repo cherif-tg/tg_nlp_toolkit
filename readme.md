@@ -20,8 +20,9 @@ l'entraînement) :
 
 Détails et exemples commentés : [résultats](docs/10-resultats-baseline.md)
 et [fine-tune](docs/11-resultats-finetune-lora.md). Les scores officiels
-seront recalculés sur un test de référence vérifié par des locuteurs
-natifs (300 paires, en cours).
+seront recalculés sur le test de référence vérifié par des locuteurs
+natifs (241 paires, double vérification — voir
+[rapport](data/processed/v0.3/rapport-verification-reference.md)).
 
 ## Corpus
 
@@ -34,9 +35,12 @@ dev 6 564 / test 6 564), assemblées depuis :
   (éwé-ness + liste noire), licence ODC-By (~49 600 paires)
 
 **Statut** : qualité documentée honnêtement (≈66 % biblique, ≈72 % NLLB) —
-voir la [datasheet v0.3](data/processed/v0.3/DATASHEET.md). Un test de
-référence (300 paires, double vérification par locuteurs natifs) est en
-cours ; le dataset passera en public sur HuggingFace après validation.
+voir la [datasheet v0.3](data/processed/v0.3/DATASHEET.md).
+
+**Dataset public sur HuggingFace** :
+<https://huggingface.co/datasets/cheriftenga/tg-nlp-toolkit-fr-ewe-v0.3>
+(inclut le split `reference` : 241 paires vérifiées par double validation
+humaine, 97 % de concordance entre vérificateurs).
 
 ## Utilisation
 
