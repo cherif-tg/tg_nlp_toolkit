@@ -655,13 +655,309 @@ print("Fichiers sauvegardes : scores-officiels-predictions.csv, scores-officiels
 ]
 
 
+# =========================================================================
+# NOTEBOOK 2b — FINE-TUNING LoRA v2 (bidirectionnel)
+# =========================================================================
+n2b = [
+    md("""# 2b. Fine-tuning v2 : bidirectionnel FR <-> EWE
+
+**Objectif** : corriger le point faible de la v1. La v1 (entrainee
+uniquement FR -> EWE) a fait progresser FR -> EWE (+10,17 chrF++ officiels)
+mais pas EWE -> FR (stagnation a 37,52).
+
+## Principe du bidirectionnel
+
+On **double le jeu d'entrainement en inversant les paires** :
+
+```
+exemple 1 : fr  -> ewe   (source = francais, labels = ewe)
+exemple 2 : ewe -> fr    (source = ewe, labels = francais)  <- inverse
+```
+
+- Train : 2 x 52 512 = **105 024 paires**
+- Dev   : 2 x 6 564  = 13 128 paires
+- Le modele apprend a la fois a COMPRENDRE et a PRODUIRE chaque langue
+  (standard pour un traducteur bidirectionnel, comme NLLB lui-meme).
+
+## Objectifs (scores officiels sur reference verifiee, 241 paires)
+
+| Direction | Baseline | v1 | v2 (attendu) |
+|---|---|---|---|
+| FR -> EWE | 37,22 | 47,39 | >= 41 (ne pas perdre) |
+| EWE -> FR | 38,14 | 37,52 | **>= 37** (viser 40) |
+
+## Pipeline
+
+1. Charger train/dev depuis GitHub
+2. Construire le dataset bidirectionnel (tokenisation par exemple)
+3. LoRA (memes hyperparametres que v1 : r=16, alpha=32)
+4. Entrainer (~60-90 min sur T4)
+5. Evaluer les 2 directions sur la reference verifiee et comparer"""),
+
+    code("""# Installation
+!pip install -q transformers sacrebleu pandas sentencepiece datasets peft accelerate
+
+print("Dependances installees")"""),
+
+    CELLULE_GPU,
+
+    code("""# Imports
+import torch
+import pandas as pd
+from sacrebleu.metrics import CHRF, BLEU
+import numpy as np
+from transformers import (AutoTokenizer, AutoModelForSeq2SeqLM,
+                          Seq2SeqTrainer, Seq2SeqTrainingArguments,
+                          DataCollatorForSeq2Seq)
+from datasets import Dataset
+from peft import LoraConfig, get_peft_model
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print("Device utilise :", device)"""),
+
+    code("""# Chargement train / dev depuis le repo GitHub public
+BASE = "https://raw.githubusercontent.com/cherif-tg/tg_nlp_toolkit/main/data/processed/v0.3/"
+
+def charger(nom):
+    return pd.read_csv(BASE + nom, sep="\\t", on_bad_lines="skip")
+
+train = charger("train.tsv")
+dev   = charger("dev.tsv")
+print("train =", len(train), "| dev =", len(dev))
+print(train.head(2))"""),
+
+    code("""# Chargement du modele + tokenizer (avant la tokenisation)
+MODEL_NAME = "facebook/nllb-200-distilled-600M"
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME).to(device)
+model.config.use_cache = False  # requis par le Trainer
+print("Modele charge")"""),
+
+    md("""## Tokenisation par exemple (bidirectionnelle)
+
+Contrainte NLLB : `tokenizer.src_lang` doit etre la langue SOURCE de chaque
+exemple. En v1 on fixait une seule direction ; en v2, chaque exemple porte
+sa propre direction (source, cible, code_src, code_tgt)."""),
+
+    code("""# Construction du dataset bidirectionnel
+# Chaque paire produit DEUX exemples : fr->ewe et ewe->fr.
+def tokeniser_exemple(source, cible, code_src, code_tgt):
+    tokenizer.src_lang = code_src
+    enc = tokenizer(source, max_length=128, truncation=True,
+                    return_tensors="pt")
+    tokenizer.src_lang = code_tgt
+    labels = tokenizer(cible, max_length=128, truncation=True,
+                       return_tensors="pt")
+    enc["labels"] = labels["input_ids"].clone()
+    # -100 = tokens ignores par la loss (padding)
+    enc["labels"][enc["labels"] == tokenizer.pad_token_id] = -100
+    return {k: v.numpy() for k, v in enc.items()}
+
+# Tuple : (source, cible, code_src, code_tgt)
+paires_train = []
+for fr, ee in zip(train["fr"].astype(str), train["ewe"].astype(str)):
+    paires_train.append((fr, ee, "fra_Latn", "ewe_Latn"))  # fr -> ewe
+    paires_train.append((ee, fr, "ewe_Latn", "fra_Latn"))  # ewe -> fr
+
+paires_dev = []
+for fr, ee in zip(dev["fr"].astype(str), dev["ewe"].astype(str)):
+    paires_dev.append((fr, ee, "fra_Latn", "ewe_Latn"))
+    paires_dev.append((ee, fr, "ewe_Latn", "fra_Latn"))
+
+print("Construction du train (peut prendre quelques minutes)...")
+train_ds = Dataset.from_list(
+    [tokeniser_exemple(s, c, a, b) for (s, c, a, b) in paires_train]
+)
+print("Construction du dev...")
+dev_ds = Dataset.from_list(
+    [tokeniser_exemple(s, c, a, b) for (s, c, a, b) in paires_dev]
+)
+print("Datasets prets : train", len(train_ds), "| dev", len(dev_ds))
+print("Exemple de cles :", list(train_ds[0].keys()))"""),
+
+    code("""import torch  # regle les conflits de paquets sur Colab
+# Configuration LoRA (identique a la v1)
+lora_config = LoraConfig(
+    r=16,
+    lora_alpha=32,
+    target_modules=["q_proj", "v_proj"],
+    lora_dropout=0.05,
+    bias="none",
+    task_type="SEQ_2_SEQ_LM",
+)
+
+model = get_peft_model(model, lora_config)
+model.print_trainable_parameters()
+# Attendu : ~0,5 % des parametres entrainables"""),
+
+    code("""# Metrique d'evaluation pendant l'entrainement : chrF++ sur le dev set
+def compute_metrics(eval_pred):
+    preds, labels = eval_pred
+    decoded_preds = tokenizer.batch_decode(preds, skip_special_tokens=True)
+    labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
+    decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
+    refs = [[r] for r in decoded_labels]
+    chrf = CHRF().corpus_score(decoded_preds, refs)
+    return {"chrF++": chrf.score}
+
+collator = DataCollatorForSeq2Seq(tokenizer, model=model, padding=True)
+print("Metrique + collator prets")"""),
+
+    code("""# Configuration de l'entrainement (identique a la v1)
+training_args = Seq2SeqTrainingArguments(
+    output_dir="nllb-ewe-lora-v2",
+    num_train_epochs=3,
+    per_device_train_batch_size=8,
+    per_device_eval_batch_size=8,
+    learning_rate=3e-4,
+    warmup_steps=200,
+    weight_decay=0.01,
+    logging_steps=100,                # plus de logs (2x plus de donnees)
+    eval_strategy="epoch",
+    save_strategy="epoch",
+    predict_with_generate=True,
+    generation_max_length=128,
+    fp16=True,
+    report_to="none",
+    push_to_hub=False,
+)
+
+trainer = Seq2SeqTrainer(
+    model=model,
+    args=training_args,
+    train_dataset=train_ds,
+    eval_dataset=dev_ds,
+    data_collator=collator,
+    tokenizer=tokenizer,
+    compute_metrics=compute_metrics,
+)
+
+print("Trainer pret - lance l'entrainement (~60-90 min sur T4)")"""),
+
+    code("""# LANCEMENT DE L'ENTRAINEMENT (~60-90 min sur T4)
+trainer.train()
+
+print("Entrainement termine !")"""),
+
+    code("""# Chargement du test de reference verifie (241 paires)
+URL_REF = "https://raw.githubusercontent.com/cherif-tg/tg_nlp_toolkit/main/huggingface/test-reference-final.tsv"
+reference = pd.read_csv(URL_REF, sep="\\t", on_bad_lines="skip")
+print("Reference chargee :", len(reference), "paires")
+
+fr_liste = [str(x) for x in reference["fr"].tolist()]
+ew_liste = [str(x) for x in reference["ewe"].tolist()]
+
+# Fonction de traduction (reutilisable dans les deux directions)
+def traduire(textes, src="fra_Latn", tgt="ewe_Latn", max_len=128, batch_size=16):
+    tokenizer.src_lang = src
+    model.eval()
+    resultats = []
+    for i in range(0, len(textes), batch_size):
+        lot = textes[i:i + batch_size]
+        enc = tokenizer(lot, return_tensors="pt", padding=True,
+                        truncation=True, max_length=max_len).to(device)
+        with torch.no_grad():
+            gen = model.generate(
+                **enc,
+                forced_bos_token_id=tokenizer.convert_tokens_to_ids(tgt),
+                max_new_tokens=max_len,
+                num_beams=4,
+            )
+        resultats += tokenizer.batch_decode(gen, skip_special_tokens=True)
+    return resultats
+
+print("Fonction de traduction prete")"""),
+
+    code("""# Evaluation v2 : FR -> EWE puis EWE -> FR (sur la reference verifiee)
+chrf_metric = CHRF()
+bleu_metric = BLEU()
+
+def scorer(preds, refs):
+    c = chrf_metric.corpus_score(preds, [refs])
+    b = bleu_metric.corpus_score(preds, [refs])
+    return round(c.score, 2), round(b.score, 2)
+
+preds_fr_ee = traduire(fr_liste, src="fra_Latn", tgt="ewe_Latn")
+v2_fr_ee = scorer(preds_fr_ee, ewe_liste)
+print("v2 FR->EWE : chrF++", v2_fr_ee[0], "| BLEU", v2_fr_ee[1])
+
+preds_ee_fr = traduire(ewe_liste, src="ewe_Latn", tgt="fra_Latn")
+v2_ee_fr = scorer(preds_ee_fr, fr_liste)
+print("v2 EWE->FR : chrF++", v2_ee_fr[0], "| BLEU", v2_ee_fr[1])"""),
+
+    code("""# Tableau comparatif baseline / v1 / v2 (scores officiels, 241 paires)
+resume = pd.DataFrame({
+    "Direction": ["FR->EWE", "FR->EWE", "FR->EWE",
+                  "EWE->FR", "EWE->FR", "EWE->FR"],
+    "Modele": ["Baseline", "LoRA v1", "LoRA v2",
+               "Baseline", "LoRA v1", "LoRA v2"],
+    "chrF++": [37.22, 47.39, v2_fr_ee[0], 38.14, 37.52, v2_ee_fr[0]],
+    "BLEU": [11.17, 22.20, v2_fr_ee[1], 14.92, 15.15, v2_ee_fr[1]],
+})
+print("=== COMPARAISON OFFICIELLE (reference verifiee, 241 paires) ===")
+print(resume.to_string(index=False))
+
+# Objectifs v2
+obj_ee_fr = v2_ee_fr[0] >= 37
+obj_fr_ee = v2_fr_ee[0] >= 41
+print("\\nObjectif EWE->FR >= 37 :", "ATTEINT" if obj_ee_fr else "NON atteint")
+print("Objectif FR->EWE >= 41 (ne pas perdre) :", "ATTEINT" if obj_fr_ee else "NON atteint")
+
+# Sauvegarde des predictions + scores
+resultats = pd.DataFrame({
+    "id": reference["id"],
+    "source": reference["source"],
+    "fr": reference["fr"],
+    "ewe": reference["ewe"],
+    "pred_fr_ee": preds_fr_ee,
+    "pred_ee_fr": preds_ee_fr,
+})
+resultats.to_csv("v2-predictions.csv", index=False, sep=";")
+resume.to_csv("v2-scores.csv", index=False, sep=";")
+print("Fichiers sauvegardes : v2-predictions.csv, v2-scores.csv")"""),
+
+    code("""# Export du modele v2 vers HuggingFace (apres connexion)
+# Decommente et execute APRES t'etre connecte :
+#   from huggingface_hub import notebook_login
+#   notebook_login()   # colle ton token
+#
+#   model.push_to_hub("cheriftenga/nllb-200-distilled-600M-ewe-lora-v2")
+#   tokenizer.push_to_hub("cheriftenga/nllb-200-distilled-600M-ewe-lora-v2")
+print("Pret pour l'export (voir instructions commentees)")"""),
+
+    md("""## Lecture des resultats
+
+- **EWE -> FR >= 37** : objectif atteint, le bidirectionnel a corrige le
+  point faible de la v1. Publie le modele v2.
+- **FR -> EWE < 41** (perte du gain v1) : parade du plan v2 =
+  repasser en unidirectionnel ou augmenter la proportion de paires
+  fr->ewe (ex. 2/3 - 1/3).
+- Rapporte les 4 chiffres affiches pour mettre a jour la model card et
+  les docs de resultats.
+
+**Prochaines etapes** : benchmark Google Translate (241 paires), MTPE
+interne (grilles sante/administration), phase audio (ASR)."""),
+]
+
+
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Genere les notebooks Colab")
+    parser.add_argument("--only", help="Genere uniquement ce notebook (ex. 02b)")
+    args = parser.parse_args()
+
     os.makedirs("notebooks", exist_ok=True)
     cibles = {
         "notebooks/01-baseline-nllb.ipynb": notebook(n1, "Baseline NLLB FR-Ewe"),
         "notebooks/02-finetune-lora.ipynb": notebook(n2, "Fine-tuning LoRA NLLB FR-Ewe"),
+        "notebooks/02b-finetune-lora-v2.ipynb": notebook(n2b, "Fine-tuning LoRA v2 bidirectionnel FR-EWE"),
         "notebooks/03-eval-officielle.ipynb": notebook(n3, "Scores officiels sur reference verifiee"),
     }
+    if args.only:
+        cibles = {k: v for k, v in cibles.items() if args.only in k}
+        if not cibles:
+            print("Notebook inconnu :", args.only)
+            return
     for chemin, nb in cibles.items():
         with open(chemin, "w", encoding="utf-8") as f:
             json.dump(nb, f, ensure_ascii=False, indent=1)
