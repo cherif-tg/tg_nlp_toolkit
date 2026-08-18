@@ -25,7 +25,7 @@ DOSSIER = os.path.normpath(
 REPO_ID = "cheriftenga/tg-nlp-toolkit-fr-ewe-v0.3"
 
 FICHIERS = [
-    "readme.md",
+    "README.md",
     "DATASHEET.md",
     "train.tsv",
     "dev.tsv",
@@ -91,6 +91,15 @@ def main():
             repo_id=REPO_ID,
             repo_type="dataset",
         )
+
+    # Nettoyage : supprimer l'eventuel doublon readme.md (minuscule)
+    # qui empeche HF d'afficher README.md comme dataset card.
+    try:
+        api.delete_file(path_in_repo="readme.md", repo_id=REPO_ID,
+                        repo_type="dataset")
+        print("  doublon readme.md (minuscule) supprime")
+    except Exception:
+        pass  # pas de doublon, rien a faire
 
     print("\n=== Passage en PUBLIC ===")
     api.update_repo_settings(repo_id=REPO_ID, repo_type="dataset", private=False)
