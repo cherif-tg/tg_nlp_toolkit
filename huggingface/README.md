@@ -14,11 +14,6 @@ tags:
 - togo
 task_categories:
 - translation
-language_details:
-- name: Français
-  code: fr
-- name: Éwé (Ewe)
-  code: ee
 configs:
 - config_name: default
   data_files:

@@ -1,16 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-build_notebooks.py — Genere les notebooks Colab de la Phase D :
+build_notebooks.py - Genere les notebooks Colab de la Phase D :
   1. notebooks/01-baseline-nllb.ipynb   (zero-shot + evaluation)
   2. notebooks/02-finetune-lora.ipynb   (fine-tuning LoRA + comparaison)
+  3. notebooks/03-eval-officielle.ipynb (scores officiels sur reference verifiee)
 
 Conventions (regles du projet) :
   - Aucun emoji dans le code ni dans les cellules (markdown inclus).
   - Chaque bloc de code est explique en francais avant execution.
   - Les donnees sont chargees depuis le repo GitHub public
-    (cherif-tg/tg_nlp_toolkit) — zero upload manuel sur Colab.
+    (cherif-tg/tg_nlp_toolkit) - zero upload manuel sur Colab.
   - Cellule de diagnostic GPU en tete de chaque notebook.
+
+ATTENTION (piege outputs) : ce script regenere les notebooks SANS leurs
+outputs d'execution. Le notebook 02 commite contient les outputs reels
+(scores chrF++/BLEU, logs d'entrainement) : NE PAS relancer ce script
+apres avoir execute les notebooks sur Colab, sinon ces outputs seront
+effaces. Pour regenerer uniquement un notebook neuf (sans outputs),
+lancer le script puis restaurer les notebooks executes :
+  git restore notebooks/02-finetune-lora.ipynb
 """
 
 import json
@@ -62,7 +71,7 @@ else:
 
 
 # =========================================================================
-# NOTEBOOK 1 — BASELINE NLLB (zero-shot)
+# NOTEBOOK 1 - BASELINE NLLB (zero-shot)
 # =========================================================================
 n1 = [
     md("""# 1. Baseline : NLLB-200 (zero-shot) FR <-> Ewe
@@ -213,7 +222,7 @@ print("   EWE->FR : chrF++", round(chrf_ee_fr.score, 2), "| BLEU", round(bleu_ee
 ]
 
 # =========================================================================
-# NOTEBOOK 2 — FINE-TUNING LoRA
+# NOTEBOOK 2 - FINE-TUNING LoRA
 # =========================================================================
 n2 = [
     md("""# 2. Fine-tuning de NLLB avec LoRA sur notre corpus
@@ -463,7 +472,7 @@ sante/administration."""),
 
 
 # =========================================================================
-# NOTEBOOK 3 — SCORES OFFICIELS sur le test de reference verifie
+# NOTEBOOK 3 - SCORES OFFICIELS sur le test de reference verifie
 # =========================================================================
 n3 = [
     md("""# 3. Scores officiels : baseline + LoRA v1 sur le test de reference verifie
