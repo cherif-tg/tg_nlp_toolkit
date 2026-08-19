@@ -964,16 +964,16 @@ sur les 241 paires du test de reference verifie.
 
 ## Avertissements
 
-- On utilise la bibliotheque `googletrans` (acces NON officiel a l'API web
-  de Google). Elle peut etre fragile (rate limit, changements d'API).
-  Si elle echoue : alternative = `deep-translator` ou l'API officielle
+- On utilise `deep-translator` (acces NON officiel a l'API web de Google,
+  code ewe `ee` gere correctement - contrairement a googletrans qui ne
+  supporte pas l'ewe). Si rate limit : alternative = l'API officielle
   Google Cloud (cle gratuite, quota 500k caracteres/mois).
 - Les traductions Google ne sont JAMAIS injectees dans notre corpus
   (CGU Google + contamination).
 - Pas besoin de GPU : ce notebook tourne sur CPU."""),
 
     code("""# Installation
-!pip install -q googletrans==4.0.0rc1 sacrebleu pandas
+!pip install -q deep-translator sacrebleu pandas
 
 print("Dependances installees")"""),
 
@@ -981,9 +981,8 @@ print("Dependances installees")"""),
 import time
 import pandas as pd
 from sacrebleu.metrics import CHRF, BLEU
-from googletrans import Translator
+from deep_translator import GoogleTranslator
 
-translator = Translator()
 print("Pret (execution sur CPU, pas besoin de GPU)")"""),
 
     code("""# Chargement du test de reference verifie (241 paires)
@@ -995,17 +994,18 @@ fr_liste = [str(x) for x in reference["fr"].tolist()]
 ew_liste = [str(x) for x in reference["ewe"].tolist()]"""),
 
     code("""# Traduction via Google Translate (retries + pause anti rate-limit)
-def traduire_gt(textes, src, dest, pause=0.4):
+def traduire_gt(textes, src, dest, pause=0.3):
+    # deep-translator : une instance reutilisable par direction.
+    traducteur = GoogleTranslator(source=src, target=dest)
     resultats = []
     for i, t in enumerate(textes):
         ok = False
         for tentative in range(4):
             try:
-                r = translator.translate(t, src=src, dest=dest)
-                resultats.append(r.text)
+                resultats.append(traducteur.translate(t))
                 ok = True
                 break
-            except Exception as e:
+            except Exception:
                 time.sleep(1.5 * (tentative + 1))
         if not ok:
             resultats.append("")
@@ -1042,7 +1042,7 @@ def scorer(preds, refs):
     b = bleu_metric.corpus_score(preds, [refs])
     return round(c.score, 2), round(b.score, 2)
 
-# Filtrer les traductions vides (echecs googletrans)
+# Filtrer les traductions vides (echecs de traduction)
 valides_fr_ee = [(p, r) for p, r in zip(gt_fr_ee, ewe_liste) if p.strip()]
 valides_ee_fr = [(p, r) for p, r in zip(gt_ee_fr, fr_liste) if p.strip()]
 print(f"FR->EWE : {len(valides_fr_ee)}/{len(gt_fr_ee)} traductions reussies")
