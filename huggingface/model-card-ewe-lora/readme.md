@@ -21,6 +21,10 @@ library_name: peft
 
 # NLLB-200-distilled-600M fine-tune LoRA FR <-> EWE
 
+> **Note** : une version **v2 bidirectionnelle** est disponible et recommandee :
+> [cheriftenga/nllb-200-distilled-600M-ewe-lora-v2](https://huggingface.co/cheriftenga/nllb-200-distilled-600M-ewe-lora-v2).
+> Elle ameliore fortement le sens EWE -> FR (52,24 chrF++ contre 37,52).
+
 Modele de traduction automatique **francais <-> ewe** (ewe, langue gbe
 parlee au Togo et au Ghana), obtenu par **fine-tuning LoRA** de
 `facebook/nllb-200-distilled-600M` sur le corpus

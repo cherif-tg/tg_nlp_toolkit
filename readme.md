@@ -6,19 +6,23 @@ conditionnel en phase finale.
 
 ## Modèle
 
-Traducteur FR ↔ ÉWÉ fine-tuné, publié sur HuggingFace :
+Traducteur FR ↔ ÉWÉ fine-tuné, publié sur HuggingFace.
+**Modèle recommandé (v2, bidirectionnel)** :
+[`cheriftenga/nllb-200-distilled-600M-ewe-lora-v2`](https://huggingface.co/cheriftenga/nllb-200-distilled-600M-ewe-lora-v2)
+V1 (unidirectionnelle, historique) :
 [`cheriftenga/nllb-200-distilled-600M-ewe-lora`](https://huggingface.co/cheriftenga/nllb-200-distilled-600M-ewe-lora)
 (NLLB-200-distilled-600M adapté par LoRA sur le corpus du projet).
 
 ### Scores officiels (test de référence vérifié, 241 paires)
 
-| Direction | Baseline (zero-shot) | Fine-tune LoRA |
-|---|---|---|
-| FR → ÉWÉ | chrF++ 37,22 — BLEU 11,17 | **chrF++ 47,39 — BLEU 22,20** |
-| ÉWÉ → FR | chrF++ 38,14 — BLEU 14,92 | chrF++ 37,52 — BLEU 15,15 |
+| Direction | Baseline (zero-shot) | LoRA v1 | LoRA v2 |
+|---|---|---|---|
+| FR → ÉWÉ | chrF++ 37,22 — BLEU 11,17 | chrF++ 47,39 — BLEU 22,20 | **chrF++ 47,95 — BLEU 22,42** |
+| ÉWÉ → FR | chrF++ 38,14 — BLEU 14,92 | chrF++ 37,52 — BLEU 15,15 | **chrF++ 52,24 — BLEU 31,83** |
 
-**Gain FR → ÉWÉ : +10,17 chrF++ / +11,03 BLEU.** Le sens ÉWÉ → FR ne
-progresse pas (modèle v1 unidirectionnel) — cible du fine-tuning v2.
+La **v2** (entraînement bidirectionnel) corrige le sens ÉWÉ → FR :
+**+14,72 chrF++** par rapport à la v1. Les deux directions sont désormais
+au même niveau (~48 et ~52 chrF++).
 
 ### Sur le split test auto-aligné (6 564 paires, pour comparaison)
 
@@ -27,8 +31,9 @@ progresse pas (modèle v1 unidirectionnel) — cible du fine-tuning v2.
 | FR → ÉWÉ | chrF++ 34,96 — BLEU 11,38 | chrF++ 41,83 — BLEU 18,71 |
 | ÉWÉ → FR | chrF++ 33,76 — BLEU 13,53 | chrF++ 33,35 — BLEU 13,69 |
 
-Détails et exemples commentés : [résultats](docs/10-resultats-baseline.md)
-et [fine-tune](docs/11-resultats-finetune-lora.md). Référence vérifiée :
+Détails et exemples commentés : [baseline](docs/10-resultats-baseline.md),
+[fine-tune v1](docs/11-resultats-finetune-lora.md) et
+[fine-tune v2](docs/12-resultats-finetune-v2.md). Référence vérifiée :
 [rapport](data/processed/v0.3/rapport-verification-reference.md).
 
 ## Corpus

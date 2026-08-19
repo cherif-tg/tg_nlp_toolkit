@@ -88,13 +88,15 @@ Colonnes : `id`, `source` (bible | nllb), `fr`, `ewe` pour le split
 | Direction | Modèle | chrF++ | BLEU |
 |---|---|---|---|
 | FR -> éwé | NLLB baseline | 37,22 | 11,17 |
-| FR -> éwé | + LoRA fine-tune | **47,39** | **22,20** |
+| FR -> éwé | LoRA v1 (unidir.) | 47,39 | 22,20 |
+| FR -> éwé | **LoRA v2 (bidir.)** | **47,95** | **22,42** |
 | éwé -> FR | NLLB baseline | 38,14 | 14,92 |
-| éwé -> FR | + LoRA fine-tune | 37,52 | 15,15 |
+| éwé -> FR | LoRA v1 (unidir.) | 37,52 | 15,15 |
+| éwé -> FR | **LoRA v2 (bidir.)** | **52,24** | **31,83** |
 
-Gain FR -> éwé : **+10,17 chrF++** et **+11,03 BLEU** par rapport au
-zero-shot. Le sens éwé -> FR ne progresse pas (modèle v1 unidirectionnel) :
-prévu par le fine-tuning v2.
+La **v2** (entraînement bidirectionnel) corrige le sens éwé -> FR :
+**+14,72 chrF++** par rapport à la v1. Les deux directions sont désormais
+au même niveau (~48 et ~52 chrF++).
 
 ### Sur le split `test` auto-aligné (6 564 paires, pour comparaison)
 
@@ -105,7 +107,9 @@ prévu par le fine-tuning v2.
 | éwé -> FR | NLLB baseline | 33,76 | 13,53 |
 | éwé -> FR | + LoRA fine-tune | 33,35 | 13,69 |
 
-Modèle publié : [cheriftenga/nllb-200-distilled-600M-ewe-lora](https://huggingface.co/cheriftenga/nllb-200-distilled-600M-ewe-lora)
+Modèles publiés :
+- v2 (recommandé) : [cheriftenga/nllb-200-distilled-600M-ewe-lora-v2](https://huggingface.co/cheriftenga/nllb-200-distilled-600M-ewe-lora-v2)
+- v1 : [cheriftenga/nllb-200-distilled-600M-ewe-lora](https://huggingface.co/cheriftenga/nllb-200-distilled-600M-ewe-lora)
 
 ## Licence
 
