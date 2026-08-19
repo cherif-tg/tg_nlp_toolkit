@@ -107,6 +107,15 @@ au même niveau (~48 et ~52 chrF++).
 | éwé -> FR | NLLB baseline | 33,76 | 13,53 |
 | éwé -> FR | + LoRA fine-tune | 33,35 | 13,69 |
 
+### Benchmark Google Translate (split `reference`, 241 paires)
+
+La v2 surpasse Google Translate dans les deux directions :
+
+| Direction | LoRA v2 | Google Translate |
+|---|---|---|
+| FR -> éwé chrF++ | **47,95** | 38,62 |
+| éwé -> FR chrF++ | **52,24** | 49,86 |
+
 Modèles publiés :
 - v2 (recommandé) : [cheriftenga/nllb-200-distilled-600M-ewe-lora-v2](https://huggingface.co/cheriftenga/nllb-200-distilled-600M-ewe-lora-v2)
 - v1 : [cheriftenga/nllb-200-distilled-600M-ewe-lora](https://huggingface.co/cheriftenga/nllb-200-distilled-600M-ewe-lora)

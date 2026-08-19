@@ -64,6 +64,17 @@ niveau (~48 et ~52 chrF++).
 | FR -> EWE chrF++ | 34,96 | 41,83 | (voir officiels) |
 | EWE -> FR chrF++ | 33,76 | 33,35 | (voir officiels) |
 
+### Benchmark Google Translate (241 paires)
+
+La v2 surpasse Google Translate dans les deux directions :
+
+| Direction | LoRA v2 | Google Translate | Avance |
+|---|---|---|---|
+| FR -> EWE chrF++ | 47,95 | 38,62 | +9,33 |
+| EWE -> FR chrF++ | 52,24 | 49,86 | +2,38 |
+
+Détail : [benchmark](https://github.com/cherif-tg/tg_nlp_toolkit/blob/main/docs/13-benchmark-google-translate.md).
+
 ## Utilisation
 
 Le modèle publié est l'**adaptateur LoRA** uniquement : il doit être chargé
