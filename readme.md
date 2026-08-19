@@ -24,6 +24,10 @@ La **v2** (entraînement bidirectionnel) corrige le sens ÉWÉ → FR :
 **+14,72 chrF++** par rapport à la v1. Les deux directions sont désormais
 au même niveau (~48 et ~52 chrF++).
 
+**Benchmark Google Translate** (241 paires) : la v2 bat Google dans les
+deux sens — FR→ÉWÉ 47,95 vs 38,62 (+9,33) ; ÉWÉ→FR 52,24 vs 49,86 (+2,38).
+Voir [benchmark](docs/13-benchmark-google-translate.md).
+
 ### Sur le split test auto-aligné (6 564 paires, pour comparaison)
 
 | Direction | Baseline (zero-shot) | Fine-tune LoRA |
