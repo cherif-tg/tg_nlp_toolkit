@@ -1081,6 +1081,161 @@ print("Sauvegarde : benchmark-google.csv")"""),
 ]
 
 
+# =========================================================================
+# NOTEBOOK 5 - BROUILLONS MTPE (post-edition des grilles)
+# =========================================================================
+n5 = [
+    md("""# 5. Brouillons MTPE : traduction des grilles FR -> Ewe (modele v2)
+
+**Objectif** : produire les brouillons de traduction des 10 grilles
+thematiques (1 048 phrases francaises) avec notre modele **v2**, pour la
+**post-edition humaine** (MTPE).
+
+## Pourquoi ce notebook ?
+
+Le modele v2 excelle sur le registre biblique/generaliste (son corpus
+d'entrainement), mais couvre mal le **domaine fonctionnel** (sante,
+administration). Les grilles sont exactement ce domaine. On genere des
+brouillons que des locuteurs natifs corrigeront ensuite.
+
+## Sortie
+
+- `brouillons-mtpe.csv` : colonnes
+  `id;grille;sous_thematique;fr;ewe_brouillon;ewe_corrige;note;statut`
+- Le locuteur remplit `ewe_corrige` (et `note` si besoin).
+
+> Les phrases FR sont **verrouillees** : ne pas les reformuler.
+> Regle sacree : ces phrases n'entrent JAMAIS dans le test de reference
+> (verifie : 0 chevauchement avec les 241 paires du test)."""),
+
+    code("""# Installation des dependances
+# - transformers + sentencepiece : modele NLLB
+# - peft : chargement de l'adaptateur LoRA
+!pip install -q transformers sentencepiece peft
+
+print("Dependances installees")"""),
+
+    CELLULE_GPU,
+
+    code("""# Imports
+import csv
+import glob
+import os
+import time
+
+import torch
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+from peft import PeftModel
+
+BASE = "facebook/nllb-200-distilled-600M"
+ADAPTER = "cheriftenga/nllb-200-distilled-600M-ewe-lora-v2"
+CODES = {"fr": "fra_Latn", "ewe": "ewe_Latn"}
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print("Device utilise :", device)"""),
+
+    code("""# Recuperation des grilles depuis le repo GitHub public
+!git clone --depth 1 https://github.com/cherif-tg/tg_nlp_toolkit.git
+print("Repo clone")"""),
+
+    code("""# Chargement du modele v2 (base NLLB + adaptateur LoRA)
+print("Chargement du modele (1-2 min)...")
+tokenizer = AutoTokenizer.from_pretrained(ADAPTER)
+base = AutoModelForSeq2SeqLM.from_pretrained(BASE).to(device)
+modele = PeftModel.from_pretrained(base, ADAPTER).to(device)
+modele.eval()
+print("Modele charge sur", device)"""),
+
+    code("""# Lecture des grilles (separateur ;, UTF-8)
+GRILLES = "tg_nlp_toolkit/data/grilles"
+
+lignes = []
+for g in sorted(glob.glob(os.path.join(GRILLES, "*.csv"))):
+    nom = os.path.basename(g)
+    with open(g, encoding="utf-8") as f:
+        for row in csv.DictReader(f, delimiter=";"):
+            fr = (row.get("Phrase FR") or "").strip()
+            if not fr:
+                continue
+            lignes.append({
+                "id": (row.get("ID") or "").strip(),
+                "grille": nom,
+                "sous_thematique": (row.get("Sous-thematique") or "").strip(),
+                "fr": fr,
+            })
+print("Phrases a traduire :", len(lignes))"""),
+
+    code("""# Traduction FR -> EWE (batch, GPU)
+def id_langue(tokenizer, code):
+    tid = tokenizer.convert_tokens_to_ids(code)
+    if tid == tokenizer.unk_token_id:
+        if hasattr(tokenizer, "lang_code_to_id"):
+            return tokenizer.lang_code_to_id[code]
+        raise ValueError(f"Token de langue introuvable : {code}")
+    return tid
+
+
+def traduire_batch(tokenizer, modele, textes, tgt="ewe", max_len=128, beams=4, batch=32):
+    tokenizer.src_lang = CODES["fr"]
+    tgt_id = id_langue(tokenizer, CODES[tgt])
+    resultats = []
+    for i in range(0, len(textes), batch):
+        lot = textes[i:i + batch]
+        enc = tokenizer(lot, return_tensors="pt", truncation=True,
+                        max_length=max_len, padding=True).to(device)
+        with torch.no_grad():
+            gen = modele.generate(
+                **enc,
+                forced_bos_token_id=tgt_id,
+                max_new_tokens=max_len,
+                num_beams=beams,
+            )
+        resultats.extend(tokenizer.batch_decode(gen, skip_special_tokens=True))
+        if (i + batch) % (batch * 10) == 0:
+            print(f"  {min(i + batch, len(textes))}/{len(textes)}")
+    return resultats
+
+print("Traduction FR -> EWE (modele v2)...")
+t0 = time.time()
+ewe = traduire_batch(tokenizer, modele, [l["fr"] for l in lignes])
+print(f"Termine en {time.time() - t0:.1f} s")
+print("Sorties vides :", sum(1 for e in ewe if not e.strip()))"""),
+
+    code("""# Ecriture du CSV de post-edition
+SORTIE = "brouillons-mtpe.csv"
+with open(SORTIE, "w", encoding="utf-8", newline="") as f:
+    w = csv.writer(f, delimiter=";")
+    w.writerow(["id", "grille", "sous_thematique", "fr",
+                "ewe_brouillon", "ewe_corrige", "note", "statut"])
+    for l, e in zip(lignes, ewe):
+        w.writerow([l["id"], l["grille"], l["sous_thematique"], l["fr"],
+                    e.strip(), "", "", "A corriger"])
+print("Brouillons ecrits :", SORTIE)"""),
+
+    code("""# Apercu des 5 premiers brouillons
+import pandas as pd
+
+df = pd.read_csv(SORTIE, sep=";")
+print(df[["id", "fr", "ewe_brouillon"]].head(5).to_string(index=False))"""),
+
+    code("""# Telechargement du fichier
+from google.colab import files
+
+files.download(SORTIE)
+print("Telecharge brouillons-mtpe.csv puis corrige la colonne ewe_corrige")"""),
+
+    md("""## Et apres ?
+
+1. Ouvre `brouillons-mtpe.csv` (Excel/Sheets/LibreOffice) en **UTF-8**.
+2. Corrige la colonne `ewe_corrige` (le brouillon est deja rempli :
+   corrige les erreurs de traduction, le ton, le registre).
+3. Renvoie le fichier corrige : il sera valide (double relecture) puis
+   reintegre au corpus pour le fine-tune v3.
+4. **Regle sacree** : ces phrases n'entrent JAMAIS dans le test de
+   reference (verifie : 0 chevauchement avec les 241 paires du test)."""),
+]
+
+
 def main():
     import argparse
     parser = argparse.ArgumentParser(description="Genere les notebooks Colab")
@@ -1094,6 +1249,7 @@ def main():
         "notebooks/02b-finetune-lora-v2.ipynb": notebook(n2b, "Fine-tuning LoRA v2 bidirectionnel FR-EWE"),
         "notebooks/03-eval-officielle.ipynb": notebook(n3, "Scores officiels sur reference verifiee"),
         "notebooks/04-benchmark-google-translate.ipynb": notebook(n4, "Benchmark Google Translate vs notre modele"),
+        "notebooks/05-mtpe-drafts.ipynb": notebook(n5, "Brouillons MTPE (post-edition FR-Ewe)"),
     }
     if args.only:
         cibles = {k: v for k, v in cibles.items() if args.only in k}
