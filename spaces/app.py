@@ -28,7 +28,7 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM  # noqa: E402
 from peft import PeftModel  # noqa: E402
 
 BASE = "facebook/nllb-200-distilled-600M"
-ADAPTER = "cheriftenga/nllb-200-distilled-600M-ewe-lora"
+ADAPTER = "cheriftenga/nllb-200-distilled-600M-ewe-lora-v2"
 CODES_NLLB = {"fr": "fra_Latn", "ewe": "ewe_Latn"}
 
 TOKENIZER = None
@@ -91,9 +91,9 @@ NOTE_ENV = (
 with gr.Blocks(title="Traducteur Francais - Ewe (Togo)") as demo:
     gr.Markdown("# Traducteur Francais <-> Ewe")
     gr.Markdown(
-        "Modele : NLLB-200-distilled-600M fine-tune LoRA sur le corpus "
-        "tg-nlp-toolkit v0.3 (65 640 paires). Projet de toolkit NLP pour "
-        "les langues du Togo."
+        "Modele : NLLB-200-distilled-600M fine-tune LoRA **v2** "
+        "(bidirectionnel) sur le corpus tg-nlp-toolkit v0.3 (65 640 paires). "
+        "Projet de toolkit NLP pour les langues du Togo."
     )
     gr.Markdown(NOTE_ENV)
     with gr.Tab("FR -> EWE"):
