@@ -1,0 +1,44 @@
+# Environnements et dépendances
+.venv/
+venv/
+env/
+__pypackages__/
+site-packages/
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Données, modèles et sorties générées
+data/
+datasets/
+models/
+artifacts/
+outputs/
+results/
+*.pkl
+*.pickle
+*.joblib
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.onnx
+
+# Fichiers locaux et secrets
+.env
+.env.*
+!.env.example

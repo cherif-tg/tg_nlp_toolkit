@@ -1,7 +1,7 @@
 # Décision de licence — Ressources historiques (archive.org, Lexilogos)
 
 - **Date** : 2026-08-13
-- **Responsable** : Cherif (découverte) + Sukuna (vérification badges via API archive.org + lecture de pages)
+- **Responsable** : Cherif (découverte) +  (vérification badges via API archive.org + lecture de pages)
 - **URL vérifiées** :
   - Bible éwé 1913 : <https://archive.org/details/biblia-alo-nonlo-kokoe-la-le-ewegbe-me-1913>
   - Vocabulaire Riebstein 1926 : <https://archive.org/details/vocabulairedelal02rieb>

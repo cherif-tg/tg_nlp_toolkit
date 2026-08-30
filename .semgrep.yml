@@ -1,0 +1,443 @@
+rules
+  # ---------------------------------------------------------------------------
+  # Exécution dynamique et désérialisation  risques de sécurité élevés
+  # ---------------------------------------------------------------------------
+
+  - id python-no-eval
+    languages [python]
+    severity ERROR
+    message 
+      Évitez eval() l'exécution de code dynamique peut introduire une injection
+      de code. Préférez une logique explicite ou ast.literal_eval() uniquement
+      pour des littéraux fiables.
+    metadata
+      category security
+      technology [python, jupyter]
+      confidence HIGH
+    pattern eval(...)
+
+  - id python-no-exec
+    languages [python]
+    severity ERROR
+    message 
+      Évitez exec() il exécute du code dynamique et présente un risque
+      d'injection de code.
+    metadata
+      category security
+      technology [python, jupyter]
+      confidence HIGH
+    pattern exec(...)
+
+  - id python-no-pickle-load-untrusted
+    languages [python]
+    severity WARNING
+    message 
+      pickle.load() peut exécuter du code lors du chargement. Ne chargez jamais
+      un fichier pickle provenant d'une source non fiable ; préférez un format
+      de données sûr lorsque possible.
+    metadata
+      category security
+      technology [python, machine-learning, jupyter]
+      confidence HIGH
+    pattern-either
+      - pattern pickle.load(...)
+      - pattern pickle.loads(...)
+      - pattern cPickle.load(...)
+      - pattern cPickle.loads(...)
+
+  - id python-yaml-load-require-safe-loader
+    languages [python]
+    severity ERROR
+    message 
+      Utilisez yaml.safe_load() au lieu de yaml.load() pour empêcher la création
+      d'objets Python potentiellement dangereux depuis du YAML non fiable.
+    metadata
+      category security
+      technology [python]
+      confidence HIGH
+    patterns
+      - pattern yaml.load(...)
+      - pattern-not yaml.load(..., Loader=yaml.SafeLoader)
+      - pattern-not yaml.load(..., Loader=yaml.CSafeLoader)
+
+  # ---------------------------------------------------------------------------
+  # Sous-processus et commandes système
+  # ---------------------------------------------------------------------------
+
+  - id python-subprocess-shell-true
+    languages [python]
+    severity ERROR
+    message 
+      subprocess avec shell=True peut permettre une injection de commande.
+      Préférez subprocess.run([programme, argument], check=True) sans shell=True.
+    metadata
+      category security
+      technology [python]
+      confidence HIGH
+    pattern-either
+      - pattern subprocess.run(..., shell=True, ...)
+      - pattern subprocess.call(..., shell=True, ...)
+      - pattern subprocess.check_call(..., shell=True, ...)
+      - pattern subprocess.check_output(..., shell=True, ...)
+      - pattern subprocess.Popen(..., shell=True, ...)
+
+  - id python-os-system
+    languages [python]
+    severity WARNING
+    message 
+      Évitez os.system(). Préférez subprocess.run() avec une liste d'arguments
+      et sans shell=True, puis contrôlez les erreurs avec check=True.
+    metadata
+      category security
+      technology [python]
+      confidence HIGH
+    pattern os.system(...)
+
+  # ---------------------------------------------------------------------------
+  # Gestion des erreurs et qualité du code
+  # ---------------------------------------------------------------------------
+
+  - id python-no-bare-except
+    languages [python]
+    severity WARNING
+    message 
+      Évitez 'except' sans type d'exception  cela masque aussi KeyboardInterrupt
+      et SystemExit. Capturez une exception spécifique ou, au minimum, Exception.
+    metadata
+      category correctness
+      technology [python, jupyter]
+      confidence HIGH
+    pattern 
+      try
+        ...
+      except
+        ...
+
+  - id python-no-silent-exception
+    languages [python]
+    severity WARNING
+    message 
+      Une exception est ignorée silencieusement. Journalisez l'erreur, remontez-la,
+      ou justifiez explicitement pourquoi elle peut être ignorée.
+    metadata
+      category correctness
+      technology [python, jupyter]
+      confidence HIGH
+    pattern-either
+      - pattern 
+          try
+            ...
+          except ...
+            pass
+      - pattern 
+          try
+            ...
+          except ...
+            ...
+            pass
+
+  - id python-assert-not-for-runtime-validation
+    languages [python]
+    severity WARNING
+    message 
+      N'utilisez pas assert pour valider des entrées ou une logique métier 
+      les assertions peuvent être désactivées avec l'optimisation Python (-O).
+      Levez plutôt ValueError, TypeError ou une exception métier explicite.
+    metadata
+      category correctness
+      technology [python]
+      confidence MEDIUM
+    pattern assert $CONDITION, ...
+
+  - id python-print-in-library-code
+    languages [python]
+    severity INFO
+    message 
+      Évitez print() dans le code applicatif ou de bibliothèque. Utilisez le module
+      logging afin de gérer les niveaux, les formats et les destinations des logs.
+      Les notebooks sont souvent une exception acceptable.
+    metadata
+      category maintainability
+      technology [python]
+      confidence MEDIUM
+    paths
+      exclude
+        - notebooks
+        - tests
+        - scripts
+    pattern print(...)
+
+  # ---------------------------------------------------------------------------
+  # Python  pièges fréquents et erreurs de conception
+  # ---------------------------------------------------------------------------
+
+  - id python-mutable-default-list
+    languages [python]
+    severity WARNING
+    message 
+      Ne mettez pas une liste mutable comme valeur par défaut d'un paramètre 
+      elle est partagée entre les appels. Utilisez None, puis créez la liste
+      dans le corps de la fonction.
+    metadata
+      category correctness
+      technology [python]
+      confidence HIGH
+    pattern-either
+      - pattern 
+          def $FUNC(..., $ARG=[], ...)
+            ...
+      - pattern 
+          def $FUNC(..., $ARG=list(), ...)
+            ...
+
+  - id python-mutable-default-dict
+    languages [python]
+    severity WARNING
+    message 
+      Ne mettez pas un dictionnaire mutable comme valeur par défaut d'un paramètre 
+      il est partagé entre les appels. Utilisez None puis initialisez-le dans la fonction.
+    metadata
+      category correctness
+      technology [python]
+      confidence HIGH
+    pattern-either
+      - pattern 
+          def $FUNC(..., $ARG={}, ...)
+            ...
+      - pattern 
+          def $FUNC(..., $ARG=dict(), ...)
+            ...
+
+  - id python-mutable-default-set
+    languages [python]
+    severity WARNING
+    message 
+      Ne mettez pas un set mutable comme valeur par défaut d'un paramètre 
+      il est partagé entre les appels. Utilisez None puis initialisez-le dans la fonction.
+    metadata
+      category correctness
+      technology [python]
+      confidence HIGH
+    pattern-either
+      - pattern 
+          def $FUNC(..., $ARG=set(), ...)
+            ...
+      - pattern 
+          def $FUNC(..., $ARG={$ITEM}, ...)
+            ...
+
+  - id python-is-literal
+    languages [python]
+    severity WARNING
+    message 
+      N'utilisez pas 'is' ou 'is not' pour comparer une valeur à un littéral.
+      Utilisez == ou !=. Réservez 'is None' et 'is not None' aux comparaisons
+      d'identité avec None.
+    metadata
+      category correctness
+      technology [python]
+      confidence HIGH
+    pattern-either
+      - pattern $X is $LITERAL
+      - pattern $X is not $LITERAL
+    metavariable-regex
+      metavariable $LITERAL
+      regex '^(TrueFalse01'''')$'
+
+  - id python-compare-none-with-equality
+    languages [python]
+    severity WARNING
+    message 
+      Comparez None avec 'is None' ou 'is not None', pas avec == ou !=.
+    metadata
+      category correctness
+      technology [python]
+      confidence HIGH
+    pattern-either
+      - pattern $X == None
+      - pattern None == $X
+      - pattern $X != None
+      - pattern None != $X
+
+  - id python-inefficient-list-membership
+    languages [python]
+    severity INFO
+    message 
+      Test d'appartenance répété dans une liste. Si la collection est utilisée
+      principalement pour des recherches avec 'in', envisagez un set pour obtenir
+      de meilleures performances.
+    metadata
+      category performance
+      technology [python]
+      confidence LOW
+    patterns
+      - pattern-inside 
+          for $ITEM in $ITERABLE
+            ...
+      - pattern $ITEM in $COLLECTION
+
+  # ---------------------------------------------------------------------------
+  # Ressources  fichiers, encodage et connexions
+  # ---------------------------------------------------------------------------
+
+  - id python-open-without-context-manager
+    languages [python]
+    severity WARNING
+    message 
+      Ouvrez les fichiers avec un gestionnaire de contexte  'with open(...) as f'.
+      Cela garantit leur fermeture même en cas d'exception.
+    metadata
+      category reliability
+      technology [python, jupyter]
+      confidence MEDIUM
+    patterns
+      - pattern $FILE = open(...)
+      - pattern-not-inside 
+          with open(...) as $FILE
+            ...
+
+  - id python-open-without-explicit-encoding
+    languages [python]
+    severity INFO
+    message 
+      Ajoutez encoding=utf-8 lors de la lecture ou de l'écriture de texte pour
+      éviter les différences de comportement selon le système d'exploitation.
+    metadata
+      category portability
+      technology [python, jupyter]
+      confidence MEDIUM
+    patterns
+      - pattern open($PATH, ...)
+      - pattern-not open($PATH, ..., encoding=$ENCODING, ...)
+      - pattern-not open($PATH, rb, ...)
+      - pattern-not open($PATH, wb, ...)
+      - pattern-not open($PATH, ab, ...)
+
+  # ---------------------------------------------------------------------------
+  # Notebooks, analyse de données et reproductibilité
+  # ---------------------------------------------------------------------------
+
+  - id python-random-without-seed
+    languages [python]
+    severity INFO
+    message 
+      Pensez à fixer une graine aléatoire pour des expériences reproductibles,
+      par exemple random.seed(SEED), numpy.random.seed(SEED) ou un générateur RNG dédié.
+    metadata
+      category reproducibility
+      technology [python, jupyter, machine-learning]
+      confidence LOW
+    pattern-either
+      - pattern random.random(...)
+      - pattern random.randint(...)
+      - pattern random.choice(...)
+      - pattern np.random.rand(...)
+      - pattern np.random.randn(...)
+      - pattern np.random.randint(...)
+      - pattern numpy.random.rand(...)
+      - pattern numpy.random.randn(...)
+      - pattern numpy.random.randint(...)
+
+  - id python-pandas-inplace
+    languages [python]
+    severity INFO
+    message 
+      Évitez inplace=True dans pandas lorsque vous cherchez un flux de données clair
+      et facile à déboguer. Préférez une affectation explicite 
+      df = df.dropna(), df = df.rename(...), etc.
+    metadata
+      category maintainability
+      technology [python, pandas, jupyter]
+      confidence MEDIUM
+    pattern $DF.$METHOD(..., inplace=True, ...)
+
+  - id python-pandas-iterrows
+    languages [python]
+    severity INFO
+    message 
+      pandas.DataFrame.iterrows() est souvent lent et peut modifier les types.
+      Préférez des opérations vectorisées, apply() lorsque nécessaire, ou itertuples().
+    metadata
+      category performance
+      technology [python, pandas, jupyter]
+      confidence MEDIUM
+    pattern $DF.iterrows()
+
+  - id python-pandas-chained-assignment
+    languages [python]
+    severity WARNING
+    message 
+      Cette affectation peut être une chained assignment pandas et produire un
+      SettingWithCopyWarning ou modifier une vue au lieu de la table attendue.
+      Préférez df.loc[filtre, colonne] = valeur.
+    metadata
+      category correctness
+      technology [python, pandas, jupyter]
+      confidence MEDIUM
+    pattern $DF[$FILTER][$COLUMN] = $VALUE
+
+  # ---------------------------------------------------------------------------
+  # Secrets  protection minimale contre les identifiants codés en dur
+  # ---------------------------------------------------------------------------
+
+  - id python-hardcoded-password
+    languages [python]
+    severity ERROR
+    message 
+      Secret potentiellement codé en dur. Stockez les mots de passe, tokens et clés
+      dans des variables d'environnement, un gestionnaire de secrets ou une configuration
+      non versionnée.
+    metadata
+      category secrets
+      technology [python, jupyter]
+      confidence MEDIUM
+    patterns
+      - pattern-either
+          - pattern $NAME = $VALUE
+          - pattern $NAME = '$VALUE'
+      - metavariable-regex
+          metavariable $NAME
+          regex '(i).(passwordpasswdsecretapi_keyapikeyaccess_tokenauth_tokenprivate_key).'
+      - metavariable-regex
+          metavariable $VALUE
+          regex '.{8,}'
+
+  - id python-requests-verify-false
+    languages [python]
+    severity ERROR
+    message 
+      Ne désactivez pas la validation des certificats TLS avec verify=False.
+      Corrigez la chaîne de certificats ou fournissez un CA bundle approprié.
+    metadata
+      category security
+      technology [python]
+      confidence HIGH
+    pattern-either
+      - pattern requests.get(..., verify=False, ...)
+      - pattern requests.post(..., verify=False, ...)
+      - pattern requests.put(..., verify=False, ...)
+      - pattern requests.delete(..., verify=False, ...)
+      - pattern requests.request(..., verify=False, ...)
+
+  - id python-requests-no-timeout
+    languages [python]
+    severity WARNING
+    message 
+      Ajoutez un timeout explicite aux requêtes HTTP pour éviter qu'un programme
+      reste bloqué indéfiniment  requests.get(url, timeout=10).
+    metadata
+      category reliability
+      technology [python, jupyter]
+      confidence MEDIUM
+    patterns
+      - pattern-either
+          - pattern requests.get(...)
+          - pattern requests.post(...)
+          - pattern requests.put(...)
+          - pattern requests.patch(...)
+          - pattern requests.delete(...)
+      - pattern-not requests.get(..., timeout=$TIMEOUT, ...)
+      - pattern-not requests.post(..., timeout=$TIMEOUT, ...)
+      - pattern-not requests.put(..., timeout=$TIMEOUT, ...)
+      - pattern-not requests.patch(..., timeout=$TIMEOUT, ...)
+      - pattern-not requests.delete(..., timeout=$TIMEOUT, ...)

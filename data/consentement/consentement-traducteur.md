@@ -3,7 +3,7 @@
 ## Projet : Toolkit NLP français ↔ éwé (Togo)
 
 **Coordinateur** : Cherif — École Polytechnique de Lomé
-**Contact** : [à compléter]
+**Contact** : 71518061
 
 ---
 
@@ -43,7 +43,6 @@ sans justification.
 ## 5. Compensation
 
 - [ ] Participation bénévole
-- [ ] Compensation convenue : [à compléter]
 
 ## 6. Droits
 

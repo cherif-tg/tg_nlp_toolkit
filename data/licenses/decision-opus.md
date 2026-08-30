@@ -1,7 +1,7 @@
 # Décision de licence — OPUS / NLLB fr-ee (corpus éwé)
 
 - **Date** : 2026-08-14 (mise à jour de la décision du 13/08)
-- **Responsable** : Cherif + Sukuna
+- **Responsable** : Cherif 
 - **URL de la source** : <https://opus.nlpl.eu/NLLB-v1.php> — paquet `NLLB.ee-fr` (format Moses)
 - **Vérification API** : `opusapi/?source=fr&target=ee&corpus=JW300` → **vide** (JW300 fr-ee n'existe pas) ; `source=fr&target=ee` → NLLB v1 présent
 

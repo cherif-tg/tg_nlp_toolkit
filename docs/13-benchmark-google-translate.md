@@ -50,9 +50,3 @@ Le premier benchmark utilisait `googletrans`, qui **ne supporte pas
 l'éwé** : le code `ee` est confondu avec l'estonien (`et`), produisant
 des traductions en estonien et un BLEU ~0 (artefact). Corrigé en passant
 à `deep-translator`, qui gère `ee` correctement.
-
-## Argument pour le mémoire
-
-« Un modèle fine-tuné sur un corpus open-source de 65 640 paires surpasse
-Google Translate sur l'éwé du Togo (+9,33 chrF++ en production FR->EWE),
-grâce à l'adaptation au registre biblique 1913 et au domaine ciblé. »

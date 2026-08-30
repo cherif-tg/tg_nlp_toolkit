@@ -28,7 +28,7 @@ Chaque donnée intégrée au projet a un statut juridique différent. Certaines 
 5. Consigner dans une **fiche de décision** (modèle : `_template-decision.md`)
 6. Mettre à jour la matrice (statut + actions)
 
-## Ce qu'il reste à vérifier en ligne (liste pour Cherif)
+## Ce qu'il reste à vérifier en ligne
 
 - [ ] **JW.org** — lire les conditions d'utilisation : <https://www.jw.org/en/terms-of-use/> — la redistribution du contenu est-elle autorisée ? (dans la plupart des cas : non)
 - [ ] **OPUS** — ouvrir la page du corpus pour l'éwé : <https://opus.nlpl.eu/> — lister les corpus disponibles pour `ewe` et noter la licence de chacun (JW300, bible-uedin, Tatoeba…)
@@ -42,7 +42,7 @@ Chaque donnée intégrée au projet a un statut juridique différent. Certaines 
 3. Le JW300 sert à l'entraînement, **jamais** dans le dataset public
 4. Ne jamais mélanger silencieusement des sources de licences différentes dans un fichier publié
 
-## Constats de la vérification (13/08/2026 — par Cherif)
+## Constats de la vérification (13/08/2026 )
 
 | Source | Constat | Décision |
 |---|---|---|

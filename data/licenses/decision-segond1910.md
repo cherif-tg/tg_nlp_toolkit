@@ -1,7 +1,7 @@
 # Décision de licence — Louis Segond 1910 (français, domaine public)
 
 - **Date** : 2026-08-13
-- **Responsable** : Sukuna (vérifié), Cherif (validation)
+- **Responsable** : Cherif (validation)
 - **Source** : dépôt GitHub `BibleCorps/FRA-B-LSG1910-PD-UBS`
   - URL : https://github.com/BibleCorps/FRA-B-LSG1910-PD-UBS
   - Format : p.sfm (USFM) — 66 livres, `\c` chapitres, `\v` versets, UTF-8

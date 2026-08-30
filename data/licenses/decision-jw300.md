@@ -1,7 +1,7 @@
 # Décision de licence — JW300 (via OPUS)
 
 - **Date** : 2026-08-13
-- **Responsable** : Cherif (lecture CGU) + Sukuna
+- **Responsable** : Cherif (lecture CGU) 
 - **URL de la source** : <https://www.jw.org/> (corpus JW300 distribué par OPUS : <https://opus.nlpl.eu/>)
 - **URL de la licence / CGU** : <https://www.jw.org/en/terms-of-use/>
 - **Type de contenu** : texte parallèle multilingue (registre religieux)

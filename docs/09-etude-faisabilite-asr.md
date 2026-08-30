@@ -1,7 +1,7 @@
 # Étude de faisabilité — ASR éwé (piste 4)
 
 - **Date** : 2026-08-15
-- **Auteur** : Sukuna (avec recherches web + API HuggingFace du jour)
+- **Auteur** : TENGA Cherif (avec recherches web + API HuggingFace du jour)
 - **Objectif** : évaluer comment introduire l'audio (reconnaissance vocale) dans le projet
 
 ---
@@ -42,7 +42,7 @@ de données.
 | **B. Fine-tuner Whisper (recommandé)** | Fine-tune `whisper-small` sur BibleTTS (CC-BY-SA) + nos propres enregistrements | Moyen (GPU Colab) | 2-4 semaines | Données nécessaires |
 | **C. Collecte communautaire** | Contribuer à Common Voice éwé / enregistrer avec nos locuteurs | Élevé | Mois | Le plus durable |
 
-## 3. 🎯 La synergie avec notre projet (recommandation)
+## 3.  La synergie avec notre projet (recommandation)
 
 Le point fort : **notre projet produit déjà le texte éwé** (corpus v0.3,
 grilles 10 thèmes, lexique Riebstein). Pour l'ASR, il faut de l'**audio

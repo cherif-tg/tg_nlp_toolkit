@@ -1,6 +1,6 @@
 # Revue des ressources existantes — checklist (P0, point 2)
 
-Objectif : savoir **exactement** ce qui existe déjà pour l'éwé et le kabiyè, pour ne pas réinventer l'existant et pour dimensionner la collecte. À faire après validation de la matrice de licences.
+Objectif : savoir **exactement** ce qui existe déjà pour l'éwé et le kabiyè, pour ne pas réinventer l'existant et pour dimensionner la collecte.
 
 ## 1. Corpus parallèles (OPUS)
 
@@ -54,10 +54,10 @@ Objectif : savoir **exactement** ce qui existe déjà pour l'éwé et le kabiyè
 
 | Ressource | Année | Statut | Verdict |
 |---|---|---|---|
-| Bible éwé (British and Foreign Bible Society) | 1913 | **Domaine public** (badge Public Domain Mark 1.0 vérifié) | ✅ Publier — alignement avec bible FR domaine public (Louis Segond) → parallèle FR↔EWE |
-| Vocabulaire de la langue éwé (Riebstein) | 1926 | Domaine public probable (vol. 2 français-éwé dispo, vol. 1 manquant) | ✅ Publier (paires lexicales + référence orthographique) — confirmer badge visuellement |
-| Dictionnaire éwé-allemand (Westermann) | 1905 | Domaine public | 🔍 À localiser numérisé |
-| Lexilogos (portail) | — | n/a | 📖 Bibliographie + clavier éwé + DUDH éwé (référence) |
+| Bible éwé (British and Foreign Bible Society) | 1913 | **Domaine public** (badge Public Domain Mark 1.0 vérifié) |  Publier — alignement avec bible FR domaine public (Louis Segond) → parallèle FR↔EWE |
+| Vocabulaire de la langue éwé (Riebstein) | 1926 | Domaine public probable (vol. 2 français-éwé dispo, vol. 1 manquant) |  Publier (paires lexicales + référence orthographique) — confirmer badge visuellement |
+| Dictionnaire éwé-allemand (Westermann) | 1905 | Domaine public | À localiser numérisé |
+| Lexilogos (portail) | — | n/a | Bibliographie + clavier éwé + DUDH éwé (référence) |
 
 ### Actions restantes
 

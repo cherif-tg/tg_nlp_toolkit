@@ -105,4 +105,3 @@ L'utilisateur écrit ou parle en éwé, le système comprend en français, répo
 1. **Développeurs** (startups type Umbaji/Yodi, freelances) → bibliothèque + API
 2. **Organisations** (PNLP, ONG, ministères) → batch + API
 3. **Chercheurs** (Masakhane, universités) → corpus + model cards
-4. **Toi** → portfolio, expertise, et démonstration de bout en bout
