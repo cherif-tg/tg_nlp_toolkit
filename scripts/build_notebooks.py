@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-build_notebooks.py - Genere les notebooks Colab de la Phase D :
-  1. notebooks/01-baseline-nllb.ipynb   (zero-shot + evaluation)
-  2. notebooks/02-finetune-lora.ipynb   (fine-tuning LoRA + comparaison)
-  3. notebooks/03-eval-officielle.ipynb (scores officiels sur reference verifiee)
+build_notebooks.py - Genere les notebooks Colab du projet :
+  1. notebooks/01-baseline-nllb.ipynb        (zero-shot + evaluation)
+  2. notebooks/02-finetune-lora.ipynb        (fine-tuning LoRA + comparaison)
+  3. notebooks/03-eval-officielle.ipynb      (scores officiels sur reference verifiee)
+  4. notebooks/04-benchmark-google-translate.ipynb (vs Google Translate)
+  5. notebooks/05-mtpe-drafts.ipynb          (brouillons MTPE des grilles)
+  6. notebooks/06-benchmark-asr-ewe.ipynb    (benchmark ASR ewe, modeles existants)
 
 Conventions (regles du projet) :
   - Aucun emoji dans le code ni dans les cellules (markdown inclus).
@@ -1236,6 +1239,281 @@ print("Telecharge brouillons-mtpe.csv puis corrige la colonne ewe_corrige")"""),
 ]
 
 
+# =========================================================================
+# NOTEBOOK 6 - BENCHMARK ASR EWE (modeles existants)
+# =========================================================================
+n6 = [
+    md("""# 6. Benchmark ASR ewe : evaluation des modeles existants
+
+**Objectif** : mesurer la qualite de transcription vocale (ASR) de trois
+modeles existants sur de l'audio ewe, AVANT tout travail de fine-tuning.
+C'est l'etape 4.1 de la feuille de route ASR (voir docs/09 et docs/14).
+
+## Modeles evalues
+
+| Modele | Type | Licence |
+|---|---|---|
+| `waxal-benchmarking/whisper-small-waxal-ewe` | Whisper small fine-tune ewe | Apache-2.0 |
+| `facebook/mms-1b-all` (adaptateur ewe) | CTC MMS, zero-shot | CC-BY-NC-4.0 (non commercial) |
+| `abiyo27/whisper-small-ewe` | Whisper small fine-tune ewe | non renseignee (reference) |
+
+## Jeu d'evaluation
+
+- Source : dataset `abiyo27/BibleTTS_Ewe-Bible` (audio biblique ewe +
+  transcriptions, licence **CC-BY-SA-4.0**).
+- Echantillon : les 100 premiers extraits de moins de 30 secondes
+  (limite d'entree de Whisper).
+- Metriques : **WER** (taux d'erreur par mot) et **CER** (par caractere).
+
+## Avertissements
+
+- Domaine **100 % biblique** : les scores ne representent pas le domaine
+  fonctionnel vise (sante/administration) - c'est une base comparative.
+- Le modele MMS pese environ 10 Go : le premier telechargement sur Colab
+  prend plusieurs minutes.
+- Derniere verification des API : 31/08/2026 (docs/14)."""),
+
+    code("""# Installation des dependances
+# - transformers : modeles (Whisper, MMS)
+# - datasets     : chargement du dataset audio
+# - jiwer        : calcul WER / CER (standard evaluation ASR)
+!pip install -q transformers datasets jiwer accelerate soundfile
+
+print("Dependances installees")"""),
+
+    CELLULE_GPU,
+
+    code("""# Imports
+import re
+import unicodedata
+
+import torch
+import pandas as pd
+import jiwer
+from datasets import Audio, load_dataset
+from transformers import (AutoProcessor, WhisperForConditionalGeneration,
+                          WhisperProcessor, Wav2Vec2ForCTC)
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print("Device utilise :", device)"""),
+
+    code("""# Chargement du dataset audio ewe (BibleTTS, CC-BY-SA-4.0)
+# cast_column(Audio(sampling_rate=16000)) : reechantillonne a 16 kHz
+# (format requis par Whisper ET par MMS).
+print("Chargement du dataset (premier telechargement : ~2 Go)...")
+ds = load_dataset("abiyo27/BibleTTS_Ewe-Bible", split="train")
+ds = ds.cast_column("audio", Audio(sampling_rate=16000))
+print("Dataset charge :", len(ds), "extraits")
+print("Colonnes :", ds.column_names)
+print("Exemple :", ds[0]["transcription"][:100])"""),
+
+    code("""# Constitution de l'echantillon de benchmark
+# - extraits de 2 a 30 secondes (limite Whisper : 30 s)
+# - les 100 premiers dans l'ordre du dataset (echantillon deterministe)
+N_ECHANTILLON = 100
+
+audio_brut = []
+references = []
+for exemple in ds:
+    signal = exemple["audio"]["array"]
+    duree = len(signal) / 16000
+    if duree < 2.0 or duree > 30.0:
+        continue
+    audio_brut.append(signal)
+    references.append(exemple["transcription"])
+    if len(audio_brut) >= N_ECHANTILLON:
+        break
+
+duree_totale = sum(len(a) for a in audio_brut) / 16000
+print("Echantillon :", len(audio_brut), "extraits |", round(duree_totale), "s d'audio au total")
+print("Exemple de reference :", references[0][:100])"""),
+
+    code("""# Normalisation du texte pour l'evaluation WER/CER
+# - minuscules, forme unicode NFC (conserve les caracteres ewe : o, e, ng, d...)
+# - suppression de la ponctuation et espaces multiples
+# - PAS de suppression des caracteres speciaux ewe (partie du mot !)
+PONCTUATION = str.maketrans({c: " " for c in ",.;:!?" + chr(34) + chr(39) + "()[]«»-"})
+
+def normaliser(texte):
+    texte = unicodedata.normalize("NFC", str(texte)).lower()
+    texte = texte.translate(PONCTUATION)
+    return " ".join(texte.split())
+
+refs_norm = [normaliser(t) for t in references]
+print("References normalisees pretes. Exemple :", refs_norm[0][:100])"""),
+
+    code("""# Fonctions communes d'evaluation
+resultats_modeles = {}
+predictions_modeles = {}
+
+def evaluer_wer_cer(refs, hyps):
+    # WER et CER corpus sur listes normalisees
+    wer = jiwer.wer(refs, hyps)
+    cer = jiwer.cer(refs, hyps)
+    return round(100 * wer, 2), round(100 * cer, 2)
+
+def afficher_exemples(refs, hyps, n=3):
+    for i in range(min(n, len(refs))):
+        print("--- Exemple", i + 1, "---")
+        print("REF :", refs[i][:120])
+        print("PRED:", hyps[i][:120])
+
+print("Fonctions d'evaluation pretes")"""),
+
+    md("""## Modele 1 : whisper-small-waxal-ewe
+
+Whisper small fine-tune par WAXAL sur de l'ewe. Le token de langue ewe
+n'existe pas dans Whisper standard : ce modele utilise la configuration
+d'generation embarquee (generation_config) - on genere donc directement,
+sans forced_decoder_ids explicite."""),
+
+    code("""# Chargement du modele 1
+MODELE_1 = "waxal-benchmarking/whisper-small-waxal-ewe"
+processor_1 = WhisperProcessor.from_pretrained(MODELE_1)
+model_1 = WhisperForConditionalGeneration.from_pretrained(MODELE_1).to(device)
+print("Modele 1 charge :", MODELE_1)"""),
+
+    code("""# Transcription avec le modele 1 (batch)
+def transcrire_whisper(model, processor, audio_liste, batch_size=8):
+    transcriptions = []
+    for i in range(0, len(audio_liste), batch_size):
+        lot = audio_liste[i:i + batch_size]
+        entrees = processor(lot, sampling_rate=16000,
+                            return_tensors="pt").input_features.to(device)
+        with torch.no_grad():
+            ids = model.generate(entrees)
+        transcriptions += processor.batch_decode(ids, skip_special_tokens=True)
+        if (i + batch_size) % (batch_size * 5) == 0:
+            print("  ", min(i + batch_size, len(audio_liste)), "/", len(audio_liste))
+    return transcriptions
+
+print("Transcription modele 1...")
+preds_1_brut = transcrire_whisper(model_1, processor_1, audio_brut)
+preds_1 = [normaliser(t) for t in preds_1_brut]
+resultats_modeles["whisper-small-waxal-ewe"] = evaluer_wer_cer(refs_norm, preds_1)
+predictions_modeles["whisper-small-waxal-ewe"] = preds_1
+print("WER :", resultats_modeles["whisper-small-waxal-ewe"][0], "% | CER :",
+      resultats_modeles["whisper-small-waxal-ewe"][1], "%")
+afficher_exemples(refs_norm, preds_1)"""),
+
+    code("""# Liberation de la memoire GPU (obligatoire avant le modele suivant)
+del model_1, processor_1
+torch.cuda.empty_cache()
+print("Memoire liberee")"""),
+
+    md("""## Modele 2 : MMS-1B-all, adaptateur ewe (zero-shot)
+
+MMS (Meta) est un modele CTC 1 milliard de parametres avec un adaptateur
+par langue. L'adaptateur ewe est charge a la demande. Attention : la
+licence est CC-BY-NC-4.0 (usage NON commercial)."""),
+
+    code("""# Chargement du modele 2 (gros telechargement : ~10 Go)
+MODELE_2 = "facebook/mms-1b-all"
+processor_2 = AutoProcessor.from_pretrained(MODELE_2)
+model_2 = Wav2Vec2ForCTC.from_pretrained(MODELE_2).to(device)
+
+# Activation de l'adaptateur ewe (pattern officiel de la model card)
+processor_2.tokenizer.set_target_lang("ewe")
+model_2.load_adapter("ewe")
+print("Modele 2 charge avec adaptateur ewe")"""),
+
+    code("""# Transcription avec le modele 2 (CTC : argmax + decode)
+def transcrire_mms(model, processor, audio_liste, batch_size=4):
+    transcriptions = []
+    for i in range(0, len(audio_liste), batch_size):
+        lot = audio_liste[i:i + batch_size]
+        # On garde TOUTES les sorties du processor (input_values +
+        # attention_mask) : le mask est requis pour des lots de durees
+        # differentes (pattern officiel de la model card MMS).
+        entrees = processor(lot, sampling_rate=16000, return_tensors="pt",
+                            padding=True).to(device)
+        with torch.no_grad():
+            logits = model(**entrees).logits
+        ids = torch.argmax(logits, dim=-1)
+        transcriptions += processor.batch_decode(ids)
+        if (i + batch_size) % (batch_size * 5) == 0:
+            print("  ", min(i + batch_size, len(audio_liste)), "/", len(audio_liste))
+    return transcriptions
+
+print("Transcription modele 2 (MMS)...")
+preds_2_brut = transcrire_mms(model_2, processor_2, audio_brut)
+preds_2 = [normaliser(t) for t in preds_2_brut]
+resultats_modeles["mms-1b-all-ewe"] = evaluer_wer_cer(refs_norm, preds_2)
+predictions_modeles["mms-1b-all-ewe"] = preds_2
+print("WER :", resultats_modeles["mms-1b-all-ewe"][0], "% | CER :",
+      resultats_modeles["mms-1b-all-ewe"][1], "%")
+afficher_exemples(refs_norm, preds_2)"""),
+
+    code("""# Liberation de la memoire GPU
+del model_2, processor_2
+torch.cuda.empty_cache()
+print("Memoire liberee")"""),
+
+    md("""## Modele 3 : abiyo27/whisper-small-ewe (reference)
+
+Fine-tune Whisper small par l'auteur du dataset BibleTTS. Utilise comme
+reference comparative (licence non renseignee sur le hub : ne pas
+diffuser ce modele, comparer uniquement)."""),
+
+    code("""# Chargement du modele 3
+MODELE_3 = "abiyo27/whisper-small-ewe"
+processor_3 = WhisperProcessor.from_pretrained(MODELE_3)
+model_3 = WhisperForConditionalGeneration.from_pretrained(MODELE_3).to(device)
+print("Modele 3 charge :", MODELE_3)"""),
+
+    code("""# Transcription avec le modele 3
+print("Transcription modele 3...")
+preds_3_brut = transcrire_whisper(model_3, processor_3, audio_brut)
+preds_3 = [normaliser(t) for t in preds_3_brut]
+resultats_modeles["whisper-small-ewe"] = evaluer_wer_cer(refs_norm, preds_3)
+predictions_modeles["whisper-small-ewe"] = preds_3
+print("WER :", resultats_modeles["whisper-small-ewe"][0], "% | CER :",
+      resultats_modeles["whisper-small-ewe"][1], "%")
+afficher_exemples(refs_norm, preds_3)
+
+del model_3, processor_3
+torch.cuda.empty_cache()
+print("Memoire liberee")"""),
+
+    code("""# Tableau recapitulatif + sauvegarde
+resume = pd.DataFrame([
+    {"Modele": nom, "WER %": scores[0], "CER %": scores[1]}
+    for nom, scores in resultats_modeles.items()
+])
+print("=== BENCHMARK ASR EWE (BibleTTS,", len(refs_norm), "extraits < 30 s) ===")
+print(resume.to_string(index=False))
+print()
+print("Reference scientifique (ICNLSP 2025, Whisper fine-tune ewe) : WER ~37 % / CER ~12 %")
+print("Attention : domaine biblique uniquement - ne pas extrapoler au domaine sante.")
+
+# Sauvegarde des predictions detaillees pour l'analyse d'erreurs
+detail = pd.DataFrame({"reference": refs_norm})
+for nom, preds in predictions_modeles.items():
+    detail[nom] = preds
+detail.to_csv("benchmark-asr-predictions.csv", index=False, sep=";")
+resume.to_csv("benchmark-asr-resume.csv", index=False, sep=";")
+print("Fichiers sauvegardes : benchmark-asr-resume.csv, benchmark-asr-predictions.csv")"""),
+
+    md("""## Lecture des resultats
+
+- **WER < 40 %** sur le domaine biblique : le modele est exploitable comme
+  point de depart pour un fine-tuning (etape 4.2).
+- **WER > 60 %** : le modele est trop faible, le fine-tuning sur
+  BibleTTS + enregistrements maison devient indispensable.
+- Le meilleur modele ici sert de **baseline** : tout notre travail (fine-tune
+  Whisper sur BibleTTS puis sur nos enregistrements consentis) doit le
+  battre.
+- Rappel licence : BibleTTS est CC-BY-SA-4.0 - tout dataset derive reste
+  CC-BY-SA (documenter dans data/licenses/).
+
+**Prochaines etapes** :
+1. Noter les 3 couples (WER, CER) dans docs/15-benchmark-asr-existants.md
+2. Fine-tune Whisper sur BibleTTS (etape 4.2, notebook a venir)
+3. Collecte audio maison avec consentement (etape 4.3, phase E)
+4. Publication future des donnees consenties : piste Mozilla Data Collective (docs/14)"""),
+]
+
+
 def main():
     import argparse
     parser = argparse.ArgumentParser(description="Genere les notebooks Colab")
@@ -1250,6 +1528,7 @@ def main():
         "notebooks/03-eval-officielle.ipynb": notebook(n3, "Scores officiels sur reference verifiee"),
         "notebooks/04-benchmark-google-translate.ipynb": notebook(n4, "Benchmark Google Translate vs notre modele"),
         "notebooks/05-mtpe-drafts.ipynb": notebook(n5, "Brouillons MTPE (post-edition FR-Ewe)"),
+        "notebooks/06-benchmark-asr-ewe.ipynb": notebook(n6, "Benchmark ASR ewe (modeles existants)"),
     }
     if args.only:
         cibles = {k: v for k, v in cibles.items() if args.only in k}

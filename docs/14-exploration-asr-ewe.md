@@ -91,6 +91,36 @@ chargera les variables avec `python-dotenv`.
 | `worldboss/ewe_bible_v2_tts` | à vérifier | |
 | `VKAgbesi/Ewe_News_Dataset` | à vérifier | nouvelles en éwé — **hors domaine biblique**, intéressant pour la diversité |
 
+### Vérifications de structure (04/09/2026, API datasets-server + hub)
+
+- `abiyo27/BibleTTS_Ewe-Bible` : config `default`, splits `train` /
+  `validation` / `test`, colonnes `audio` (Audio, mp3) + `transcription`
+  (texte). ~2,3 Go, public, téléchargeable sans token. **Retenu comme
+  source principale du benchmark ASR (notebook 06).**
+- `analist/bibletts-ewe-16k-public` : config `default`, splits `train` /
+  `test`, colonnes `audio` (Audio, flac) + `text`. ~16,2 Go, 10-100k
+  extraits. **Aucune licence déclarée** : à clarifier avant tout usage.
+- `VKAgbesi/Ewe_News_Dataset` : **ce ne sont pas des fichiers audio mais
+  des images** (colonne `image:Image`, scans d'articles de presse, ~4
+  lignes). À retirer des ressources ASR dans l'étude 09.
+
+### Vérifications des modèles ASR (04/09/2026, configs HF)
+
+- `facebook/mms-1b-all` : pattern officiel de la model card confirmé —
+  `processor.tokenizer.set_target_lang("ewe")` puis
+  `model.load_adapter("ewe")`, `model(**inputs)` en conservant
+  l'`attention_mask` (requis en batch), décodage CTC par argmax +
+  `processor.decode(ids)`. Adaptateur `adapter.ewe.safetensors` présent.
+- `waxal-benchmarking/whisper-small-waxal-ewe` : `generation_config.json`
+  embarqué avec `forced_decoder_ids [[1, null], [2, 50359]]` (langue non
+  forcée, tâche transcribe) et `alignment_heads` → un simple
+  `model.generate(input_features)` suffit.
+- `abiyo27/whisper-small-ewe` : pas de `generation_config.json`, mais
+  `config.json` porte `forced_decoder_ids [[1, 50325], [2, 50359],
+  [3, 50363]]` — **50325 est le token `<|yo|>` (yoruba), utilisé comme
+  placeholder de langue ewe** (Whisper standard n'a pas de token ewe).
+  Piège à garder en tête pour le fine-tune 4.2.
+
 Rappel licence : un dataset dérivé de CC-BY-SA reste CC-BY-SA (partage
 aux mêmes conditions) — à intégrer dans la matrice `data/licenses/`.
 
@@ -112,13 +142,19 @@ aux mêmes conditions) — à intégrer dans la matrice `data/licenses/`.
 
 ## 5. Prochaines actions
 
-1.  créer `.env` local (`cp .env.example .env`) et y coller
-   la clé MDC (`MDC_API_KEY=...`) — ne jamais committer ce fichier.
-2.  rechercher « ewe » dans l'UI MDC ; communiquer les
+1. ~~Cherif : créer `.env`~~ — modèle `.env.example` committé le 04/09 ;
+   copier vers `.env` et renseigner `MDC_API_KEY` (jamais committé).
+2. **Cherif** : rechercher « ewe » dans l'UI MDC ; communiquer les
    `datasetId`/slugs éventuels ; accepter les conditions d'utilisation
    sur la fiche web de tout dataset qu'on voudra télécharger.
-3. **Sukuna** : écrire `scripts/asr/mdc_client.py` (détails dataset +
-   téléchargement avec vérification du checksum sha256) dès qu'on a un
-   ID de dataset — ou en préambule du benchmark pour les datasets HF.
-4. **Sukuna + Cherif** : notebook Colab du benchmark 4.1 (WER/CER sur
-   20 phrases), résultats dans `docs/15-benchmark-asr-existants.md`.
+3. ~~Sukuna : écrire `scripts/asr/mdc_client.py`~~ — committé le 04/09.
+   Usage : `python scripts/asr/mdc_client.py info <datasetId>` puis
+   `download <datasetId> --out data/audio` (checksum sha256 vérifié).
+4. **Benchmark 4.1** : notebook `06-benchmark-asr-ewe.ipynb` généré par
+   `build_notebooks.py` — évalue `whisper-small-waxal-ewe`,
+   `facebook/mms-1b-all` (adaptateur ewe) et `abiyo27/whisper-small-ewe`
+   sur 100 extraits de `BibleTTS_Ewe-Bible` (WER/CER via jiwer).
+   À exécuter sur Colab T4 ; résultats à consigner dans
+   `docs/15-benchmark-asr-existants.md`.
+
+Statut au 04/09 : actions 1 et 3 faites ; benchmark prêt à exécuter.
