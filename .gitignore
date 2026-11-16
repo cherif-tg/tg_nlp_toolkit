@@ -11,3 +11,8 @@ __pycache__/
 
 # Planification interne (non publiee sur GitHub)
 planning/
+
+# Artefacts ASR (manifestes generes, checkpoints, resultats de notebooks)
+data-asr/
+checkpoints-*/
+resultats/
