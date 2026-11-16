@@ -6,6 +6,13 @@
 
 ---
 
+> **Mise à jour (2026-11-16)** : l'état des données a été re-vérifié et le
+> plan d'exécution v0.1 fixé dans
+> [`14-asr-ewe-plan-execution-v0.1.md`](14-asr-ewe-plan-execution-v0.1.md).
+> WAXAL confirmé et retenu comme source d'entraînement ; FLEURS ne contient
+> pas d'éwé ; MMS disponible en zero-shot ; référence WAXALNet WER 32,3.
+> Le présent document reste l'analyse des options.
+
 ## 1. Bonne nouvelle : l'écosystème ASR éwé existe déjà
 
 Contrairement au corpus de traduction (quasi vide avant notre travail), l'ASR

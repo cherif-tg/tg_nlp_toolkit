@@ -105,6 +105,24 @@ python tests/test_cli.py        # CLI batch
 python tests/test_demo_api.py   # démo (mode API)
 ```
 
+### 6. ASR éwé (v0.1)
+
+Reconnaissance vocale éwé : `whisper-small` fine-tuné sur WAXAL
+(`google/WaxalNLP`, CC-BY-4.0). Détails, licences et feuille de route :
+[`docs/14-asr-ewe-plan-execution-v0.1.md`](docs/14-asr-ewe-plan-execution-v0.1.md).
+
+```bash
+# Manifestes et statistiques (echantillon local, streaming)
+pip install datasets soundfile
+python src/asr/prep_waxal_ewe.py --split train --max-rows 20 --stream \
+    --out-dir data-asr/manifests
+```
+
+| Notebook | Contenu |
+|---|---|
+| [`06-asr-ewe-baseline.ipynb`](notebooks/06-asr-ewe-baseline.ipynb) | Statistiques du corpus WAXAL éwé + baselines (MMS-1B zero-shot, WAXALNet) |
+| [`07-asr-ewe-finetune-whisper.ipynb`](notebooks/07-asr-ewe-finetune-whisper.ipynb) | Fine-tuning whisper-small sur WAXAL éwé + évaluation WER/CER |
+
 ## Structure
 
 | Dossier | Rôle |
@@ -115,9 +133,10 @@ python tests/test_demo_api.py   # démo (mode API)
 | `src/api/` | API REST FastAPI (endpoint /translate) |
 | `src/cli/` | CLI de traduction batch |
 | `src/clean/` | Pipeline de nettoyage : normalisation, extraction, alignement |
+| `src/asr/` | Pipeline ASR : préparation des données WAXAL éwé |
 | `demo/` | Démo Gradio (modes local / API) |
 | `spaces/` | Fichiers de déploiement HuggingFace Spaces |
-| `notebooks/` | Notebooks Colab (baseline + fine-tuning) |
+| `notebooks/` | Notebooks Colab (MT : baseline, fine-tuning, évaluation ; ASR) |
 | `docs/` | Étude, guide d'utilisation, revue des ressources, résultats |
 | `tests/` | Tests automatisés (API, CLI, démo) |
 
@@ -127,4 +146,7 @@ python tests/test_demo_api.py   # démo (mode API)
   attribution requise) — justificatifs dans `data/licenses/`
 - **Modèle** : CC-BY-NC-SA-4.0 (héritée de NLLB, Meta AI — usage non
   commercial)
+- **Modèle ASR (v0.1)** : `whisper-small` (MIT) fine-tuné sur WAXAL éwé
+  (CC-BY-4.0, attribution à WaxalNLP et ses partenaires) — publication
+  prévue sous CC-BY-4.0
 - **Code** : MIT
