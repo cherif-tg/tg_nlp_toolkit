@@ -108,7 +108,9 @@ python tests/test_demo_api.py   # démo (mode API)
 ### 6. ASR éwé (v0.1)
 
 Reconnaissance vocale éwé : `whisper-small` fine-tuné sur WAXAL
-(`google/WaxalNLP`, CC-BY-4.0). Détails, licences et feuille de route :
+(`google/WaxalNLP`, CC-BY-4.0). Résultats v0.1 : **WER 30,2 % / CER 9,6 %**
+sur le test public complet (1 891 extraits). Détails, licences et feuille de
+route :
 [`docs/14-asr-ewe-plan-execution-v0.1.md`](docs/14-asr-ewe-plan-execution-v0.1.md).
 
 ```bash

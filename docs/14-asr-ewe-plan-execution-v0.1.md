@@ -1,8 +1,9 @@
 # ASR éwé — état vérifié et plan d'exécution v0.1
 
-Date : 2026-11-16
+Date : 2026-11-16 (résultats v0.1 ajoutés le 2026-11-25)
 Projet : tg_nlp_toolkit
-Statut : pipeline prête (script de préparation testé ; notebooks prêts pour Colab)
+Statut : v0.1 entraînée et évaluée — WER 30,2 % / CER 9,6 % sur le test
+public complet (1 891 extraits)
 Suite de : `docs/09-etude-faisabilite-asr.md` (2026-08-15) — ce document met à
 jour l'état des données (re-vérifié le 2026-11-16) et fixe le plan d'exécution.
 
@@ -211,9 +212,11 @@ Attribution type pour un modèle publié :
 
 ## 9. Feuille de route
 
-- **v0.1 (ce document + notebooks 06/07)** : pipeline reproductible,
-  baselines MMS/WAXALNet, whisper-small fine-tuné sur WAXAL éwé, WER/CER
-  sur test complet et filtré, export d'erreurs.
+- **v0.1 (fait le 2026-11-25, ce document + notebooks 06/07)** : pipeline
+  reproductible, whisper-small fine-tuné sur WAXAL éwé, WER 30,2 % /
+  CER 9,6 % sur le test complet, export d'erreurs. Reste de la ligne
+  d'origine : mesurer les baselines MMS/WAXALNet dans notre protocole
+  (notebook 06).
 - **v0.2** :
   - test togolais : un petit lot de phrases (ex. les grilles de collecte du
     projet) lues par des locuteurs togolais, transcrites en double
@@ -268,14 +271,39 @@ python src/asr/prep_waxal_ewe.py --split train --max-rows 20 --stream \
 
 ## 12. Résultats
 
-À remplir après exécution sur Colab :
+Évaluation du modèle v0.1 (whisper-small fine-tuné sur WAXAL éwé), exécutée
+le 2026-11-25 sur Google Colab, GPU T4.
 
-| Modèle | WER | CER | Jeu |
+**Entraînement** : 3 époques, 2 823 pas (941 pas/époque), 2 h 29, FP16,
+lr 1e-4, warmup 500, batch effectif 16 (8 × 2 accumulations de gradients),
+activation checkpointing.
+
+**Données effectives** : 15 049 extraits d'entraînement, 1 915 de validation
+(sous-échantillon de 250 pour la validation intermédiaire et l'arrêt précoce),
+1 891 de test. Cinq extraits écartés au total par les filtres (1 audio
+illisible, 4 clips > 30 s).
+
+| Modèle | WER | CER | Jeu d'évaluation |
 |---|---|---|---|
-| MMS-1B zero-shot (adaptateur `ewe`) | à mesurer | à mesurer | test complet |
-| WAXALNet `whisper-small-waxal-ewe` | à mesurer | à mesurer | test complet |
-| **whisper-small fine-tuné WAXAL éwé (v0.1)** | à mesurer | à mesurer | test complet |
-| WAXALNet (chiffre annoncé, sous-ensemble privé filtré) | 32,3 | 10,6 | non reproductible |
+| **whisper-small fine-tuné WAXAL éwé (notre v0.1)** | **30,2 %** | **9,6 %** | test public complet, 1 891 extraits |
+| WAXALNet `whisper-small-waxal-ewe` (chiffre annoncé) | 32,3 % | 10,6 % | sous-ensemble privé filtré, non reproductible |
+| MMS-1B zero-shot (adaptateur `ewe`) | non mesuré | non mesuré | premier point du notebook 06 à exécuter |
+
+Courbe de validation (WER / CER) : 38,0 / 13,5 % (pas 500), 33,9 / 11,6 %
+(1 000), 33,5 / 11,7 % (1 500), 33,5 / 10,9 % (2 000), 32,8 / 11,0 % (2 500),
+32,6 / 10,8 % (2 823).
+
+**Lecture honnête** : notre score est mesuré sur le test public complet, non
+filtré, avec une normalisation documentée (section 7) ; le chiffre WAXALNet
+provient d'un sous-ensemble privé nettoyé (filtre non reproduisible). La
+comparaison est donc indicative, pas un match à armes égales — mais elle
+situe le premier entraînement (2,5 h sur T4 gratuit) au niveau de la
+référence publiée. Les baselines MMS et WAXALNet n'ont pas encore été
+mesurées dans notre protocole : c'est le prochain point de comparaison.
+
+**Analyse qualitative** : les 20 pires erreurs du test sont exportées dans
+`resultats/pires_erreurs_test.csv` ; la relecture par un locuteur éwé est la
+prochaine étape (section 9, v0.2).
 
 ## 13. Références (toutes consultées le 2026-11-16)
 
